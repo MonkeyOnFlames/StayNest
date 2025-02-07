@@ -94,13 +94,40 @@ Plocka ut det delar ur Spring Security som ni tycker är viktigast, räcker med 
 Lista konkreta säkerhetsimplementeringar:
 
 ```java
-// Exempel på säkerhetskonfiguration
-@Configuration
-@EnableWebSecurity
-public class SecurityConfig {
-    // Din säkerhetskonfiguration här
-}
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+                //CORS config
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                //CSRF, disable in dev
+                //OBS! should not be disabled in production
+                .csrf(csrf -> csrf.disable())
+                //define URL based rules
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/landlord/**").hasAnyRole("LANDLORD", "ADMIN")
+                        .requestMatchers("/user/**").hasAnyRole("USER", "LANDLORD", "ADMIN")
+                        .requestMatchers("/auth/**").permitAll()
+                        //any other requests the user need to be logged
+                        .anyRequest().authenticated()
+                )
+                //disable session due to jwt statelessness
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                //add jwt filter before standard filter
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        return http.build();
+    }
 ```
+
+```java
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(12);
+    }
+```
+
 
 ## 6. Kvarstående Risker
 
