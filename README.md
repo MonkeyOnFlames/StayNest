@@ -41,6 +41,34 @@ Kryssa i det som stämmer för er, fyll på med fler om det behövs.
 
 Beskriv hur du skyddar den känsliga informationen:
 
+```java
+@Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+                //CORS config
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                //CSRF, disable in dev
+                //OBS! should not be disabled in production
+                .csrf(csrf -> csrf.disable())
+                //define URL based rules
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/landlord/**").hasAnyRole("LANDLORD", "ADMIN")
+                        .requestMatchers("/user/**").hasAnyRole("USER", "LANDLORD", "ADMIN")
+                        .requestMatchers("/auth/**").permitAll()
+                        //any other requests the user need to be logged
+                        .anyRequest().authenticated()
+                )
+                //disable session due to jwt statelessness
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                //add jwt filter before standard filter
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        return http.build();
+    }
+```
+
 - Kryptering (vilken data krypteras och hur?)
 
 - Lösenord (salta och hasha)
