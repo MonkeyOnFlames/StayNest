@@ -33,13 +33,13 @@ public class UserService {
     }
 
     //find user by username
-    public User findUserByEmail(String email) {
-        return userRepository.findByEmail(email)
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
     //check if username already exists
-    public boolean existsByEmail(String email) {
-        return userRepository.findByEmail(email).isPresent();
+    public boolean existsByUsername(String username) {
+        return userRepository.findByUsername(username).isPresent();
     }
 }

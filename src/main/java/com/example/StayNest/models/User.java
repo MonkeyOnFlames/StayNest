@@ -14,6 +14,10 @@ public class User {
     private String id;
 
     @Indexed(unique = true)
+    @NotEmpty(message = "Username cannot be empty")
+    private String username;
+
+    @Indexed(unique = true)
     @NotEmpty(message = "Email cannot be empty")
     private String email;
 
@@ -36,8 +40,9 @@ public class User {
     public User() {
     }
 
-    public User(String id, String email, String password, Set<Role> roles, String first_name, String last_name, String adress, String phone, int age) {
+    public User(String id, String username, String email, String password, Set<Role> roles, String first_name, String last_name, String adress, String phone, int age) {
         this.id = id;
+        this.username = username;
         this.email = email;
         this.password = password;
         this.roles = roles;
@@ -50,6 +55,14 @@ public class User {
 
     public String getId() {
         return id;
+    }
+
+    public @NotEmpty(message = "Username cannot be empty") String getUsername() {
+        return username;
+    }
+
+    public void setUsername(@NotEmpty(message = "Username cannot be empty") String username) {
+        this.username = username;
     }
 
     public @NotEmpty(message = "Email cannot be empty") String getEmail() {
