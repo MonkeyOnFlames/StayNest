@@ -73,6 +73,15 @@ public class UserService {
 
     }
 
+    public void deleteUser(String id) {
+        if(!userRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+        }
+        userRepository.deleteById(id);
+
+
+    }
+
 //    public User createUser(User user) {
 //        validateUser(user);
 //        return userRepository.save(user);
