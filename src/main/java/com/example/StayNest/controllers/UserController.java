@@ -2,6 +2,7 @@ package com.example.StayNest.controllers;
 
 import com.example.StayNest.models.User;
 import com.example.StayNest.services.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,10 +37,9 @@ public class UserController {
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable String id, @RequestBody User user){
-        User updatedUser = userService.updateUser(id, user);
-        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+    @PatchMapping("/{id}")
+    public ResponseEntity<User> updateUser(@PathVariable String id, @Valid @RequestBody User user){
+        return ResponseEntity.ok(userService.updateUser(id, user));
     }
 
     @DeleteMapping("/{id}")

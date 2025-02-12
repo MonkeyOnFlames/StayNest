@@ -33,7 +33,7 @@ public class User {
 
     private String first_name;
     private String last_name;
-    private int age;
+    private Integer age;
     private String adress;
     private String phone;
 
@@ -115,7 +115,7 @@ public class User {
         this.last_name = last_name;
     }
 
-    public int getAge() {
+    public Integer getAge() {
         return age;
     }
 

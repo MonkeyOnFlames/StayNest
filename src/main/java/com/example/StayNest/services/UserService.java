@@ -62,21 +62,54 @@ public class UserService {
         User existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
-        existingUser.setFirst_name(user.getFirst_name());
-        existingUser.setLast_name(user.getLast_name());
-        existingUser.setEmail(user.getEmail());
-        existingUser.setAdress(user.getAdress());
-        existingUser.setPhone(user.getPhone());
-        existingUser.setAge(user.getAge());
+        //uppdatera endast icke null fält
+//        if (user.getUsername() != null) {
+//            existingUser.setUsername(user.getUsername());
+//        }
+//        if (user.getEmail() != null) {
+//            existingUser.setEmail(user.getEmail());
+//        }
+        if (user.getFirst_name() != null) {
+            existingUser.setFirst_name(user.getFirst_name());
+        }
+        if (user.getLast_name() != null) {
+            existingUser.setLast_name(user.getLast_name());
+        }
+        if (user.getAdress() != null) {
+            existingUser.setAdress(user.getAdress());
+        }
+        if (user.getPhone() != null) {
+            existingUser.setPhone(user.getPhone());
+        }
+        if (user.getAge() != null) {
+            existingUser.setAge(user.getAge());
+        }
 
         return userRepository.save(existingUser);
-
     }
 
+//    public User updateUser(String id, User user) {
+//        User existingUser = userRepository.findById(id)
+//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+//
+//        existingUser.setFirst_name(user.getFirst_name());
+//        existingUser.setLast_name(user.getLast_name());
+//        existingUser.setEmail(user.getEmail());
+//        existingUser.setAdress(user.getAdress());
+//        existingUser.setPhone(user.getPhone());
+//        existingUser.setAge(user.getAge());
+//
+//        return userRepository.save(existingUser);
+//
+//    }
+
     public void deleteUser(String id) {
-        if(!userRepository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
-        }
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+//        if(!userRepository.existsById(id)) {
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+//        }
         userRepository.deleteById(id);
 
 
