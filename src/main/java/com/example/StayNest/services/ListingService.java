@@ -47,9 +47,9 @@ public class ListingService {
         if (listing.getDescription() != null){
             existingListing.setDescription(listing.getDescription());
         }
-//        if (listing.getPrice() != null){
-//            existingListing.setPrice(listing.getPrice());
-//        }
+        if (listing.getPrice() != null){
+            existingListing.setPrice(listing.getPrice());
+        }
         if (listing.getType() != null){
             existingListing.setType(listing.getType());
         }

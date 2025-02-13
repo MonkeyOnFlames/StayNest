@@ -108,11 +108,11 @@ public class Listing {
     @NotEmpty(message = "Price cannot be empty")
     @NotNull(message = "Price cannot be null")
     @Positive(message = "Price must be greater than 0")
-    public double getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(@NotEmpty(message = "Price cannot be empty") @NotNull(message = "Price cannot be null") @Positive(message = "Price must be greater than 0") double price) {
+    public void setPrice(@NotEmpty(message = "Price cannot be empty") @NotNull(message = "Price cannot be null") @Positive(message = "Price must be greater than 0") Double price) {
         this.price = price;
     }
 
