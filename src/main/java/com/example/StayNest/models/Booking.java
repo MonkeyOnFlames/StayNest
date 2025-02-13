@@ -44,13 +44,6 @@ private boolean available;
         this.id = id;
     }
 
-    public @NotEmpty(message = "Name can not be empty") @NotNull(message = "Name can not be null") String getName() {
-        return name;
-    }
-
-    public void setName(@NotEmpty(message = "Name can not be empty") @NotNull(message = "Name can not be null") String name) {
-        this.name = name;
-    }
 
     public @NotEmpty(message = "Description can not be empty") @NotNull(message = "Description can not be null") String getDescription() {
         return description;
@@ -80,5 +73,13 @@ private boolean available;
 
     public void setAvailable(@NotEmpty(message = "Available can not be empty") @NotNull(message = "Available can not be null") boolean available) {
         this.available = available;
+    }
+
+    public @NotEmpty(message = "Name can not be empty") @NotNull(message = "Name can not be null") String getName() {
+        return name;
+    }
+
+    public void setName(@NotEmpty(message = "Name can not be empty") @NotNull(message = "Name can not be null") String name) {
+        this.name = name;
     }
 }

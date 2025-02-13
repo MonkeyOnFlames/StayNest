@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/bookings")
@@ -25,14 +26,21 @@ public class BookingController {
         return new ResponseEntity<>(booking, HttpStatus.CREATED);
     }
 
-    @GetMapping("/all")
+    @GetMapping
     public ResponseEntity<List<Booking>> getAllBookings(){
         List<Booking> bookings = bookingService.getAllBookings();
-        return new ResponseEntity.ok(bookings);
+        return new ResponseEntity<>(bookings, HttpStatus.OK);
     }
 //se vilken user har gjort bokningen genom id
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Booking>> getUserBooking(@PathVariable String userId){
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Booking> getProductById(@PathVariable String id) {
+        Optional<Product> product = productService.getProductById(id);
+        return product.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<List<Booking>> getBookingById(@PathVariable String userId){
         List<Booking> bookings = bookingService.getUserBooking(userId);
         return new ResponseEntity.ok(bookings);
     }
