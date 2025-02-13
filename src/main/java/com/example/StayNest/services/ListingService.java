@@ -50,8 +50,8 @@ public class ListingService {
         if (listing.getPrice() != null){
             existingListing.setPrice(listing.getPrice());
         }
-        if (listing.getListingType() != null){
-            existingListing.setListingType(listing.getListingType());
+        if (listing.getListingTypes() != null){
+            existingListing.setListingTypes(listing.getListingTypes());
         }
         if (listing.getListingPolicy() != null){
             existingListing.setListingPolicy(listing.getListingPolicy());
@@ -119,7 +119,7 @@ public class ListingService {
         if (listing.getPrice() < 0){
             throw new IllegalArgumentException("Price cannot be less than 0");
         }
-        if (listing.getListingType() == null){
+        if (listing.getListingTypes() == null){
             throw new IllegalArgumentException("Type cannot be less than 0");
         }
         if (listing.getListingPolicy() == null || listing.getListingPolicy().trim().isEmpty()){

@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Document(collection = "listings")
 public class Listing {
@@ -38,7 +39,7 @@ public class Listing {
 
     @NotEmpty(message = "Type cannot be empty")
     @NotNull(message = "Type cannot be null")
-    private ListingType listingType;
+    private Set<ListingType> listingTypes;
 
     @NotEmpty(message = "Listing policy cannot be empty")
     @NotNull(message = "Listing policy cannot be null")
@@ -116,12 +117,12 @@ public class Listing {
         this.price = price;
     }
 
-    public @NotEmpty(message = "Type cannot be empty") @NotNull(message = "Type cannot be null") ListingType getListingType() {
-        return listingType;
+    public @NotEmpty(message = "Type cannot be empty") @NotNull(message = "Type cannot be null") Set<ListingType> getListingTypes() {
+        return listingTypes;
     }
 
-    public void setListingType(@NotEmpty(message = "Type cannot be empty") @NotNull(message = "Type cannot be null") ListingType listingType) {
-        this.listingType = listingType;
+    public void setListingTypes(@NotEmpty(message = "Type cannot be empty") @NotNull(message = "Type cannot be null") Set<ListingType> listingTypes) {
+        this.listingTypes = listingTypes;
     }
 
     public @NotEmpty(message = "Listing policy cannot be empty") @NotNull(message = "Listing policy cannot be null") String getListingPolicy() {
