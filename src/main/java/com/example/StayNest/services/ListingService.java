@@ -4,10 +4,12 @@ import com.example.StayNest.models.Listing;
 import com.example.StayNest.repositories.ListingRepository;
 import com.example.StayNest.repositories.UserRepository;
 import jakarta.validation.Valid;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 
+@Service
 public class ListingService {
     private final ListingRepository listingRepository;
     private final UserRepository userRepository;
@@ -23,11 +25,11 @@ public class ListingService {
         return listingRepository.save(listing);
     }
 
-    public Listing findByListingId(String id) {
+    public Listing getListingsById(String id) {
         return listingRepository.findByListingId(id);
     }
 
-    public List<Listing> findAllListings() {
+    public List<Listing> getAllListings() {
         return listingRepository.findAll();
     }
 
@@ -45,9 +47,9 @@ public class ListingService {
         if (listing.getDescription() != null){
             existingListing.setDescription(listing.getDescription());
         }
-        if (listing.getPrice() != null){
-            existingListing.setPrice(listing.getPrice());
-        }
+//        if (listing.getPrice() != null){
+//            existingListing.setPrice(listing.getPrice());
+//        }
         if (listing.getType() != null){
             existingListing.setType(listing.getType());
         }
@@ -77,7 +79,7 @@ public class ListingService {
         listingRepository.delete(listing);
     }
 
-    public List<Listing> findListingsByUser(String userId) {
+    public List<Listing> getListingsByUserId(String userId) {
         if (userId == null || userId.trim().isEmpty()) {
             throw new IllegalArgumentException("User ID cannot be null or empty");
         }
