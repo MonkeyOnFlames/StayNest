@@ -1,13 +1,14 @@
 package com.example.StayNest.models;
 
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Positive;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Date;
 import java.util.List;
 
 @Document(collection = "listings")
@@ -32,82 +33,158 @@ public class Listing {
 
     @NotEmpty(message = "Price cannot be empty")
     @NotNull(message = "Price cannot be null")
-    @Min(value = 0, message = "Price has to be positive")
-    private double price;
+    @Positive(message = "Price must be greater than 0")
+    private Double price;
 
     @NotEmpty(message = "Type cannot be empty")
     @NotNull(message = "Type cannot be null")
     private ListingType type;
 
-    @NotEmpty(message = "Environments cannot be empty")
-    @NotNull(message = "Environments cannot be null")
-    private Environment environment;
+    @NotEmpty(message = "Listing policy cannot be empty")
+    @NotNull(message = "Listing policy cannot be null")
+    private String listingPolicy;
 
-    @NotEmpty(message = "Restrictions cannot be empty")
-    @NotNull(message = "Restrictions cannot be null")
-    private String restrictions;
+    private List<Enviroment> environment;
+
+    private List<Restrictions> restrictions;
 
     @NotEmpty(message = "Pictures cannot be empty")
     @NotNull(message = "Pictures cannot be null")
-    @Size(min = 1, max = 6, message = "You can only have 1-6 pictures")
     private List<String> pictureURLs;
 
     @NotEmpty(message = "Availability cannot be empty")
     @NotNull(message = "Availability cannot be null")
-    private List<String> availability;
+    private List<Availability> availability;
+
+    @CreatedDate
+    private Date createdAt;
 
 
     public Listing() {
+        // sätt pictureURLs begränsningar
+
     }
 
-    private class Environment {
-        private int kWh;
-        private boolean charge_post;
-        private boolean recycle;
-        private boolean isBike;
-        private boolean solarPower;
+    public String getId() {
+        return id;
+    }
 
-        public Environment() {
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public @NotEmpty(message = "Name cannot be empty") @NotNull(message = "Name cannot be null") String getName() {
+        return name;
+    }
+
+    public void setName(@NotEmpty(message = "Name cannot be empty") @NotNull(message = "Name cannot be null") String name) {
+        this.name = name;
+    }
+
+    public @NotEmpty(message = "Location cannot be empty") @NotNull(message = "Location cannot be null") String getLocation() {
+        return location;
+    }
+
+    public void setLocation(@NotEmpty(message = "Location cannot be empty") @NotNull(message = "Location cannot be null") String location) {
+        this.location = location;
+    }
+
+    public @NotEmpty(message = "Description cannot be empty") @NotNull(message = "Description cannot be null") String getDescription() {
+        return description;
+    }
+
+    public void setDescription(@NotEmpty(message = "Description cannot be empty") @NotNull(message = "Description cannot be null") String description) {
+        this.description = description;
+    }
+
+    @NotEmpty(message = "Price cannot be empty")
+    @NotNull(message = "Price cannot be null")
+    @Positive(message = "Price must be greater than 0")
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(@NotEmpty(message = "Price cannot be empty") @NotNull(message = "Price cannot be null") @Positive(message = "Price must be greater than 0") double price) {
+        this.price = price;
+    }
+
+    public @NotEmpty(message = "Type cannot be empty") @NotNull(message = "Type cannot be null") ListingType getType() {
+        return type;
+    }
+
+    public void setType(@NotEmpty(message = "Type cannot be empty") @NotNull(message = "Type cannot be null") ListingType type) {
+        this.type = type;
+    }
+
+    public @NotEmpty(message = "Listing policy cannot be empty") @NotNull(message = "Listing policy cannot be null") String getListingPolicy() {
+        return listingPolicy;
+    }
+
+    public void setListingPolicy(@NotEmpty(message = "Listing policy cannot be empty") @NotNull(message = "Listing policy cannot be null") String listingPolicy) {
+        this.listingPolicy = listingPolicy;
+    }
+
+    public List<Enviroment> getEnvironment() {
+        return environment;
+    }
+
+    public void setEnvironment(List<Enviroment> environments) {
+        this.environment = environments;
+    }
+
+    public List<Restrictions> getRestrictions() {
+        return restrictions;
+    }
+
+    public void setRestrictions(List<Restrictions> restrictions) {
+        this.restrictions = restrictions;
+    }
+
+    public @NotEmpty(message = "Pictures cannot be empty") @NotNull(message = "Pictures cannot be null") List<String> getPictureURLs() {
+        return pictureURLs;
+    }
+
+    public void setPictureURLs(@NotEmpty(message = "Pictures cannot be empty") @NotNull(message = "Pictures cannot be null") List<String> pictureURLs) {
+        this.pictureURLs = pictureURLs;
+    }
+
+    public @NotEmpty(message = "Availability cannot be empty") @NotNull(message = "Availability cannot be null") List<Availability> getAvailability() {
+        return availability;
+    }
+
+    public void setAvailability(@NotEmpty(message = "Availability cannot be empty") @NotNull(message = "Availability cannot be null") List<Availability> availability) {
+        this.availability = availability;
+    }
+
+    private class Availability {
+        private Date startDate;
+        private Date endDate;
+
+        public Availability() {
         }
 
-        public int getkWh() {
-            return kWh;
+        public Date getStartDate() {
+            return startDate;
         }
 
-        public void setkWh(int kWh) {
-            this.kWh = kWh;
+        public void setStartDate(Date startDate) {
+            this.startDate = startDate;
         }
 
-        public boolean isCharge_post() {
-            return charge_post;
+        public Date getEndDate() {
+            return endDate;
         }
 
-        public void setCharge_post(boolean charge_post) {
-            this.charge_post = charge_post;
-        }
-
-        public boolean isRecycle() {
-            return recycle;
-        }
-
-        public void setRecycle(boolean recycle) {
-            this.recycle = recycle;
-        }
-
-        public boolean isBike() {
-            return isBike;
-        }
-
-        public void setBike(boolean bike) {
-            isBike = bike;
-        }
-
-        public boolean isSolarPower() {
-            return solarPower;
-        }
-
-        public void setSolarPower(boolean solarPower) {
-            this.solarPower = solarPower;
+        public void setEndDate(Date endDate) {
+            this.endDate = endDate;
         }
     }
 }
