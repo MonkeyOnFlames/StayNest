@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/bookings")
+@RequestMapping("/bookings")
 public class BookingController {
     private final BookingService bookingService;
 
@@ -25,16 +25,16 @@ public class BookingController {
         return new ResponseEntity<>(booking, HttpStatus.CREATED);
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<Booking>> getAllBookings(){
         List<Booking> bookings = bookingService.getAllBookings();
-        return new ResponseEntity<>(bookings, HttpStatus.OK);
+        return new ResponseEntity.ok(bookings);
     }
-
-    @GetMapping("/name/{name}")
-    public ResponseEntity<List<Booking>> getBookingByName(@PathVariable String name){
-        List<Booking> bookings = bookingService.getBookingByname(name);
-        return new ResponseEntity<>(bookings, HttpStatus.OK);
+//se vilken user har gjort bokningen genom id
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<Booking>> getUserBooking(@PathVariable String userId){
+        List<Booking> bookings = bookingService.getUserBooking(userId);
+        return new ResponseEntity.ok(bookings);
     }
 
 

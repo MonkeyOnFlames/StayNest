@@ -9,6 +9,10 @@ public class BookingService {
 
 private final BookingRepository bookingRepository;
 
+    public BookingService(BookingRepository bookingRepository) {
+        this.bookingRepository = bookingRepository;
+    }
+
     public Booking CreatedBooking(Booking booking){
     validateBooking(booking);
 
