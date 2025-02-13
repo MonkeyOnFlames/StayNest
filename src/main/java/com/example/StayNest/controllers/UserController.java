@@ -19,11 +19,12 @@ public class UserController {
         this.userService = userService;
     }
 
-//    @PostMapping
-//    public ResponseEntity<User> createUser(@RequestBody User user) {
-//        User createdUser = userService.createUser(user);
-//        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
-//    }
+    //this needs to be changed when we implement register and log in
+    @PostMapping
+    public ResponseEntity<User> createUser(@RequestBody User user) {
+        User createdUser = userService.createUser(user);
+        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<Optional<User>> getUserById(@PathVariable String id) {

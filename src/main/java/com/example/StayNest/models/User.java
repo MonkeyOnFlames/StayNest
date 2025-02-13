@@ -1,6 +1,7 @@
 package com.example.StayNest.models;
 
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -30,11 +31,22 @@ public class User {
     private String password;
 
     private Set<Role> roles;
-
+    @NotNull(message = "First name can't be null")
+    @NotEmpty(message = "First name can't be empty")
     private String first_name;
+    @NotNull(message = "Last name can't be null")
+    @NotEmpty(message = "Last name can't be empty")
     private String last_name;
+
+    //not sure if @NotEmpty works with Integer
+    @NotNull(message = "Can't be null")
+    @NotEmpty(message = "This can't be empty")
     private Integer age;
+    @NotNull(message = "Adress can't be null")
+    @NotEmpty(message = "Adress can't be empty")
     private String adress;
+    @NotNull(message = "The phone number can't be null")
+    @NotEmpty(message = "The phone number can't be empty")
     private String phone;
 
     public User() {
@@ -99,43 +111,44 @@ public class User {
         this.roles = roles;
     }
 
-    public String getFirst_name() {
+
+    public @NotNull(message = "First name can't be null") @NotEmpty(message = "First name can't be empty") String getFirst_name() {
         return first_name;
     }
 
-    public void setFirst_name(String first_name) {
+    public void setFirst_name(@NotNull(message = "First name can't be null") @NotEmpty(message = "First name can't be empty") String first_name) {
         this.first_name = first_name;
     }
 
-    public String getLast_name() {
+    public @NotNull(message = "Last name can't be null") @NotEmpty(message = "Last name can't be empty") String getLast_name() {
         return last_name;
     }
 
-    public void setLast_name(String last_name) {
+    public void setLast_name(@NotNull(message = "Last name can't be null") @NotEmpty(message = "Last name can't be empty") String last_name) {
         this.last_name = last_name;
     }
 
-    public Integer getAge() {
+    public @NotNull(message = "Can't be null") @NotEmpty(message = "This can't be empty") Integer getAge() {
         return age;
     }
 
-    public void setAge(int age) {
+    public void setAge(@NotNull(message = "Can't be null") @NotEmpty(message = "This can't be empty") Integer age) {
         this.age = age;
     }
 
-    public String getAdress() {
+    public @NotNull(message = "Adress can't be null") @NotEmpty(message = "Adress can't be empty") String getAdress() {
         return adress;
     }
 
-    public void setAdress(String adress) {
+    public void setAdress(@NotNull(message = "Adress can't be null") @NotEmpty(message = "Adress can't be empty") String adress) {
         this.adress = adress;
     }
 
-    public String getPhone() {
+    public @NotNull(message = "The phone number can't be null") @NotEmpty(message = "The phone number can't be empty") String getPhone() {
         return phone;
     }
 
-    public void setPhone(String phone) {
+    public void setPhone(@NotNull(message = "The phone number can't be null") @NotEmpty(message = "The phone number can't be empty") String phone) {
         this.phone = phone;
     }
 }
