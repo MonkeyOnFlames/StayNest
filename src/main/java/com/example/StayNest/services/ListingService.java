@@ -33,7 +33,7 @@ public class ListingService {
         return listingRepository.findAll();
     }
 
-    public Listing patchListing(String id, Listing listing) {
+    public Listing patchListing(@Valid String id, Listing listing) {
         Listing existingListing = listingRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Listing not found with id " + id));
 
@@ -50,8 +50,8 @@ public class ListingService {
         if (listing.getPrice() != null){
             existingListing.setPrice(listing.getPrice());
         }
-        if (listing.getType() != null){
-            existingListing.setType(listing.getType());
+        if (listing.getListingType() != null){
+            existingListing.setListingType(listing.getListingType());
         }
         if (listing.getListingPolicy() != null){
             existingListing.setListingPolicy(listing.getListingPolicy());
@@ -119,7 +119,7 @@ public class ListingService {
         if (listing.getPrice() < 0){
             throw new IllegalArgumentException("Price cannot be less than 0");
         }
-        if (listing.getType() == null){
+        if (listing.getListingType() == null){
             throw new IllegalArgumentException("Type cannot be less than 0");
         }
         if (listing.getListingPolicy() == null || listing.getListingPolicy().trim().isEmpty()){

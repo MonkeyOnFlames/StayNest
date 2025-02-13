@@ -38,7 +38,7 @@ public class Listing {
 
     @NotEmpty(message = "Type cannot be empty")
     @NotNull(message = "Type cannot be null")
-    private ListingType type;
+    private ListingType listingType;
 
     @NotEmpty(message = "Listing policy cannot be empty")
     @NotNull(message = "Listing policy cannot be null")
@@ -116,12 +116,12 @@ public class Listing {
         this.price = price;
     }
 
-    public @NotEmpty(message = "Type cannot be empty") @NotNull(message = "Type cannot be null") ListingType getType() {
-        return type;
+    public @NotEmpty(message = "Type cannot be empty") @NotNull(message = "Type cannot be null") ListingType getListingType() {
+        return listingType;
     }
 
-    public void setType(@NotEmpty(message = "Type cannot be empty") @NotNull(message = "Type cannot be null") ListingType type) {
-        this.type = type;
+    public void setListingType(@NotEmpty(message = "Type cannot be empty") @NotNull(message = "Type cannot be null") ListingType listingType) {
+        this.listingType = listingType;
     }
 
     public @NotEmpty(message = "Listing policy cannot be empty") @NotNull(message = "Listing policy cannot be null") String getListingPolicy() {
