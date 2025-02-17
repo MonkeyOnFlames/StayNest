@@ -3,6 +3,7 @@ package com.example.StayNest.models;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Positive;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -31,20 +32,25 @@ public class User {
     private String password;
 
     private Set<Role> roles;
+
     @NotNull(message = "First name can't be null")
     @NotEmpty(message = "First name can't be empty")
     private String first_name;
+
     @NotNull(message = "Last name can't be null")
     @NotEmpty(message = "Last name can't be empty")
     private String last_name;
 
     //not sure if @NotEmpty works with Integer
+//    @NotEmpty(message = "This can't be empty")
     @NotNull(message = "Can't be null")
-    @NotEmpty(message = "This can't be empty")
+    @Positive(message = "The age must be greater than 0")
     private Integer age;
+
     @NotNull(message = "Adress can't be null")
     @NotEmpty(message = "Adress can't be empty")
     private String adress;
+
     @NotNull(message = "The phone number can't be null")
     @NotEmpty(message = "The phone number can't be empty")
     private String phone;
@@ -128,13 +134,13 @@ public class User {
         this.last_name = last_name;
     }
 
-    public @NotNull(message = "Can't be null") @NotEmpty(message = "This can't be empty") Integer getAge() {
-        return age;
-    }
-
-    public void setAge(@NotNull(message = "Can't be null") @NotEmpty(message = "This can't be empty") Integer age) {
-        this.age = age;
-    }
+//    public @NotNull(message = "Can't be null") /*@NotEmpty(message = "This can't be empty")*/ Integer getAge() {
+//        return age;
+//    }
+//
+//    public void setAge(@NotNull(message = "Can't be null") /*@NotEmpty(message = "This can't be empty")*/ Integer age) {
+//        this.age = age;
+//    }
 
     public @NotNull(message = "Adress can't be null") @NotEmpty(message = "Adress can't be empty") String getAdress() {
         return adress;
@@ -150,5 +156,13 @@ public class User {
 
     public void setPhone(@NotNull(message = "The phone number can't be null") @NotEmpty(message = "The phone number can't be empty") String phone) {
         this.phone = phone;
+    }
+
+    public @NotNull(message = "Can't be null") @Positive(message = "The age must be greater than 0") Integer getAge() {
+        return age;
+    }
+
+    public void setAge(@NotNull(message = "Can't be null") @Positive(message = "The age must be greater than 0") Integer age) {
+        this.age = age;
     }
 }

@@ -1,5 +1,6 @@
 package com.example.StayNest.services;
 
+import com.example.StayNest.exceptions.ResourceNotFoundException;
 import com.example.StayNest.models.Role;
 import com.example.StayNest.models.User;
 import com.example.StayNest.repositories.UserRepository;
@@ -71,11 +72,18 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public User updateUser(@Valid String id, User user) {
+    public User updateUser(String id, User user) {
         User existingUser = userRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-
+                .orElseThrow(() -> new /*ResponseStatusException(HttpStatus.NOT_FOUND,*/
+                        ResourceNotFoundException("User not found"));
+//        validateUser(existingUser);
         // only updates none null fields
+        if (user.getUsername() != null) {
+            existingUser.setUsername(user.getUsername());
+        }
+        if (user.getPassword() != null) {
+            existingUser.setPassword(user.getPassword());
+        }
         if (user.getRoles() != null) {
             existingUser.setRoles(user.getRoles());
         }
@@ -97,6 +105,8 @@ public class UserService {
         if (user.getAge() != null) {
             existingUser.setAge(user.getAge());
         }
+
+
 
         return userRepository.save(existingUser);
     }
