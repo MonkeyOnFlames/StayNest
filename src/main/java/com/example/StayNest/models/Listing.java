@@ -165,7 +165,7 @@ public class Listing {
         this.availabilities = availabilities;
     }
 
-    private class Availability {
+    public static class Availability {
         private Date startDate;
         private Date endDate;
 

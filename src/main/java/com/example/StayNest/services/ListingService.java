@@ -20,6 +20,7 @@ public class ListingService {
     }
 
     public Listing createListing(@Valid Listing listing) {
+
         validateListing(listing);
 
         return listingRepository.save(listing);
@@ -49,9 +50,6 @@ public class ListingService {
         }
         if (listing.getPrice() != null){
             existingListing.setPrice(listing.getPrice());
-        }
-        if (listing.getListingTypes() != null){
-            existingListing.setListingTypes(listing.getListingTypes());
         }
         if (listing.getListingPolicy() != null){
             existingListing.setListingPolicy(listing.getListingPolicy());
