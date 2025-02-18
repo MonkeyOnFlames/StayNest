@@ -1,7 +1,5 @@
 package com.example.StayNest.filter;
 
-import com.example.StayNest.services.CustomUserDetailsService;
-import com.example.StayNest.util.JwtUtil;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -17,6 +15,8 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
+import com.example.StayNest.services.CustomUserDetailsService;
+import com.example.StayNest.util.JwtUtil;
 
 import java.io.IOException;
 
@@ -64,7 +64,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
                 // validate token and create valid authentication if token is valid
-                if (jwtUtil.validateToken(jwt, userDetails)) {
+                if(jwtUtil.validateToken(jwt, userDetails)) {
                     UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                             userDetails, null, userDetails.getAuthorities()
                     );
