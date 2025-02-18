@@ -65,8 +65,8 @@ public class ListingService {
         if (listing.getPictureURLs() != null){
             existingListing.setPictureURLs(listing.getPictureURLs());
         }
-        if (listing.getAvailability() != null){
-            existingListing.setAvailability(listing.getAvailability());
+        if (listing.getAvailabilities() != null){
+            existingListing.setAvailabilities(listing.getAvailabilities());
         }
 
         return listingRepository.save(existingListing);
@@ -128,7 +128,7 @@ public class ListingService {
         if (listing.getPictureURLs() == null){
             throw new IllegalArgumentException("You need at least one picture");
         }
-        if (listing.getAvailability() == null){
+        if (listing.getAvailabilities() == null){
             throw new IllegalArgumentException("Availability cannot be empty or null");
         }
     }

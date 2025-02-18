@@ -55,7 +55,7 @@ public class Listing {
 
     @NotEmpty(message = "Availability cannot be empty")
     @NotNull(message = "Availability cannot be null")
-    private List<Availability> availability;
+    private List<Availability> availabilities;
 
     @CreatedDate
     private Date createdAt;
@@ -157,12 +157,12 @@ public class Listing {
         this.pictureURLs = pictureURLs;
     }
 
-    public @NotEmpty(message = "Availability cannot be empty") @NotNull(message = "Availability cannot be null") List<Availability> getAvailability() {
-        return availability;
+    public @NotEmpty(message = "Availability cannot be empty") @NotNull(message = "Availability cannot be null") List<Availability> getAvailabilities() {
+        return availabilities;
     }
 
-    public void setAvailability(@NotEmpty(message = "Availability cannot be empty") @NotNull(message = "Availability cannot be null") List<Availability> availability) {
-        this.availability = availability;
+    public void setAvailabilities(@NotEmpty(message = "Availability cannot be empty") @NotNull(message = "Availability cannot be null") List<Availability> availabilities) {
+        this.availabilities = availabilities;
     }
 
     private class Availability {
