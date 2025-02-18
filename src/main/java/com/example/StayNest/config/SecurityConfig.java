@@ -47,11 +47,11 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 //define URL based rules
                 .authorizeHttpRequests(auth -> auth
-//                        .requestMatchers("/admin/**").hasRole("ADMIN")
-//                        .requestMatchers("/landlord/**").hasAnyRole("LANDLORD", "ADMIN")
-//                        .requestMatchers("/user/**").hasAnyRole("USER", "LANDLORD", "ADMIN")
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/landlord/**").hasAnyRole("LANDLORD", "ADMIN")
+                        .requestMatchers("/user/**").hasAnyRole("USER", "LANDLORD", "ADMIN")
                         .requestMatchers("/api/users/**").permitAll()
-//                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/auth/**").permitAll()
                         //any other requests the user need to be logged
                         .anyRequest().authenticated()
                 )

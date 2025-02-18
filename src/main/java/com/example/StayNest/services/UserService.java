@@ -72,6 +72,7 @@ public class UserService {
         return userRepository.findAll();
     }
 
+    //when we implement register/login we need to delete some fields
     public User updateUser(String id, User user) {
         User existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new /*ResponseStatusException(HttpStatus.NOT_FOUND,*/
