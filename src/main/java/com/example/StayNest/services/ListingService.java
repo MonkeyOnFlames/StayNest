@@ -26,14 +26,14 @@ public class ListingService {
     }
 
     public Listing getListingsById(String id) {
-        return listingRepository.findByListingId(id);
+        return listingRepository.findListingById(id);
     }
 
     public List<Listing> getAllListings() {
         return listingRepository.findAll();
     }
 
-    public Listing patchListing(@Valid String id, Listing listing) {
+    public Listing patchListing(String id, Listing listing) {
         Listing existingListing = listingRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Listing not found with id " + id));
 
