@@ -27,7 +27,8 @@ public class ListingService {
     }
 
     public Listing getListingsById(String id) {
-        return listingRepository.findListingById(id);
+        return listingRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Listing not found with id " + id));
     }
 
     public List<Listing> getAllListings() {
@@ -77,18 +78,18 @@ public class ListingService {
         listingRepository.delete(listing);
     }
 
-    public List<Listing> getListingsByUserId(String userId) {
-        if (userId == null || userId.trim().isEmpty()) {
-            throw new IllegalArgumentException("User ID cannot be null or empty");
-        }
-
-        List<Listing> listings = listingRepository.findByUserId(userId);
-        if (listings.isEmpty()) {
-            throw new NoSuchElementException("User with ID " + userId + " does not have any listings");
-        }
-
-        return listingRepository.findByUserId(userId);
-    }
+//    public List<Listing> getListingsByUserId(String userId) {
+//        if (userId == null || userId.trim().isEmpty()) {
+//            throw new IllegalArgumentException("User ID cannot be null or empty");
+//        }
+//
+//        List<Listing> listings = listingRepository.findByUserId(userId);
+//        if (listings.isEmpty()) {
+//            throw new NoSuchElementException("User with ID " + userId + " does not have any listings");
+//        }
+//
+//        return listingRepository.findByUserId(userId);
+//    }
 
     public List<Listing> getListingsByPriceRange(double minPrice, double maxPrice) {
         if (minPrice < 0 || maxPrice < 0) {

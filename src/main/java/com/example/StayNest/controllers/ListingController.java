@@ -46,13 +46,13 @@ public class ListingController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<List<Listing>> getListingByUserId(@PathVariable String userId) {
-        List<Listing> listings = listingService.getListingsByUserId(userId);
-        return new ResponseEntity<>(listings, HttpStatus.OK);
-    }
+//    @GetMapping("/{userId}")
+//    public ResponseEntity<List<Listing>> getListingByUserId(@PathVariable String userId) {
+//        List<Listing> listings = listingService.getListingsByUserId(userId);
+//        return new ResponseEntity<>(listings, HttpStatus.OK);
+//    }
 
-    @GetMapping("/{price}")
+    @GetMapping("/price")
     public ResponseEntity<List<Listing>> getListingByPriceRange(@RequestParam double minPrice, @RequestParam double maxPrice) {
         List<Listing> listings = listingService.getListingsByPriceRange(minPrice, maxPrice);
         return new ResponseEntity<>(listings, HttpStatus.OK);
