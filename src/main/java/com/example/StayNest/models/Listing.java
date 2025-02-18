@@ -65,24 +65,6 @@ public class Listing {
         // pictureURL max 6 photos
     }
 
-    public Listing(String name, String location, String description, Double price, Set<ListingType> listingTypes, String listingPolicy, List<Enviroment> environment, List<Restrictions> restrictions, List<String> pictureURLs, List<Availability> availabilities) {
-        this.name = name;
-        this.location = location;
-        this.description = description;
-        this.price = price;
-        this.listingTypes = listingTypes;
-        this.listingPolicy = listingPolicy;
-        this.environment = environment;
-        this.restrictions = restrictions;
-        if (pictureURLs != null && pictureURLs.size() < 6) {
-            this.pictureURLs = pictureURLs;
-        } else {
-            throw new IllegalArgumentException("You need to have have 1-5 pictures");
-        }
-
-        this.availabilities = availabilities;
-    }
-
     public String getId() {
         return id;
     }
