@@ -2,7 +2,9 @@ package com.example.StayNest.controllers;
 
 
 import com.example.StayNest.models.Booking;
+import com.example.StayNest.models.User;
 import com.example.StayNest.repositories.BookingRepository;
+import com.example.StayNest.repositories.UserRepository;
 import com.example.StayNest.services.BookingService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -14,13 +16,15 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/bookings")
+@RequestMapping("/api/bookings")
 public class BookingController {
     private final BookingService bookingService;
 private final BookingRepository bookingRepository;
-    public BookingController(BookingService bookingService, BookingRepository bookingRepository) {
+private final UserRepository userRepository;
+    public BookingController(BookingService bookingService, BookingRepository bookingRepository, UserRepository userRepository) {
         this.bookingService = bookingService;
         this.bookingRepository = bookingRepository;
+        this.userRepository = userRepository;
     }
 
     @PostMapping
@@ -34,7 +38,7 @@ private final BookingRepository bookingRepository;
         List<Booking> bookings = bookingService.getAllBookings();
         return new ResponseEntity<>(bookings, HttpStatus.OK);
     }
-//se vilken user har gjort bokningen genom id
+//Hitta en bokning genom id
 
     @GetMapping("/{id}")
     public ResponseEntity<Booking> getBookingById (@PathVariable String id){
@@ -42,10 +46,18 @@ private final BookingRepository bookingRepository;
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Plant not found"));
         return ResponseEntity.ok(booking);
     }
+//Se vilken user har gjort vilken bookning
+    @GetMapping("/{userId}")
+    public ResponseEntity<Booking> getUserBookingById (@PathVariable String id, @RequestBody Booking booking){
+        Optional<User> user = userRepository.findById(id);
+        Booking getUserBookingById = bookingRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Plant not found"));
+        return ResponseEntity.ok(booking);
+    }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Booking> deleteBooking(@PathVariable String id){
-        if (!bookingRepository.existsById(id)){
+    public ResponseEntity<Booking> deleteBooking(@PathVariable String id) {
+        if (!bookingRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Plant not found");
         }
 
@@ -53,5 +65,5 @@ private final BookingRepository bookingRepository;
         return ResponseEntity.noContent().build();
 
 
-
+    }
 }

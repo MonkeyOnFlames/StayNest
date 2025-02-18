@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotNull;
 
 public class BookingDTO {
 
-    @NotNull(message = "Customer id is required")
+   /* @NotNull(message = "Customer id is required")
     private String customerId;
 
     @NotNull(message = "Booking must contain at least one listing")
@@ -28,4 +28,6 @@ public class BookingDTO {
     public void setCustomerId(@NotNull(message = "Customer id is required") String customerId) {
         this.customerId = customerId;
     }
+
+    */
 }
