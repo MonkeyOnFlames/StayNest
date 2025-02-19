@@ -4,6 +4,6 @@ public enum Enviroment {
     KWH,
     CHARGE_POST,
     RECYCLE,
-    IS_BIKE,
+    BIKE,
     SOLAR_POWER
 }
