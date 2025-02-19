@@ -1,5 +1,6 @@
 package com.example.StayNest.services;
 
+import com.example.StayNest.exceptions.ResourceNotFoundException;
 import com.example.StayNest.models.Listing;
 import com.example.StayNest.repositories.ListingRepository;
 import com.example.StayNest.repositories.UserRepository;
@@ -28,7 +29,7 @@ public class ListingService {
 
     public Listing getListingsById(String id) {
         return listingRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Listing not found with id " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Listing not found with id " + id));
     }
 
     public List<Listing> getAllListings() {
