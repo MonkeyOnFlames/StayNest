@@ -17,15 +17,15 @@ import java.util.Date;
 public class JwtUtil {
     //secret key to generate tokens
     @Value("${jwt.secret}")
-    private String jwtSecret;
+    private String jwtsecret;
 
     //how long token is valid (milli sek)
     @Value("${jwt.expirationMs}")
     private int jwtExpirationMs;
 
     //create encrypted key based on our secret values
-    private Key getSigningKey() {
-        byte[] keyBytes = jwtSecret.getBytes(StandardCharsets.UTF_8);
+    private Key getSigninKey(){
+        byte[] keyBytes = jwtsecret.getBytes(StandardCharsets.UTF_8);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
@@ -35,7 +35,7 @@ public class JwtUtil {
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
-                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .signWith(getSigninKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
@@ -44,8 +44,8 @@ public class JwtUtil {
         try {
             String username = extractUsername(token);
             return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
-        } catch (JwtException | IllegalArgumentException e) {
 
+        } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
     }
@@ -63,9 +63,9 @@ public class JwtUtil {
 
     private Claims extractAllClaims(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(getSigningKey())
+                .setSigningKey(getSigninKey())
                 .build()
-                .parseClaimsJws(token)
+                .parseClaimsJwt(token)
                 .getBody();
     }
 }

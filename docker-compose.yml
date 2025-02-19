@@ -2,6 +2,5 @@ version: '3.8'
 services:
   app:
     build: .
-    container_name: StayNest
     ports:
       - "8081:8080"
