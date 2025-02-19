@@ -36,8 +36,8 @@ public class ListingController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Listing> patchListing(@PathVariable String id, @RequestBody Listing listing) {
-        return ResponseEntity.ok(listingService.patchListing(id, listing));
+    public ResponseEntity<Listing> updateListing(@PathVariable String id, @RequestBody Listing listing) {
+        return ResponseEntity.ok(listingService.updateListing(id, listing));
     }
 
     @DeleteMapping("/{id}")
@@ -46,11 +46,6 @@ public class ListingController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-//    @GetMapping("/{userId}")
-//    public ResponseEntity<List<Listing>> getListingByUserId(@PathVariable String userId) {
-//        List<Listing> listings = listingService.getListingsByUserId(userId);
-//        return new ResponseEntity<>(listings, HttpStatus.OK);
-//    }
 
     @GetMapping("/price")
     public ResponseEntity<List<Listing>> getListingByPriceRange(@RequestParam double minPrice, @RequestParam double maxPrice) {

@@ -35,7 +35,7 @@ public class ListingService {
         return listingRepository.findAll();
     }
 
-    public Listing patchListing(String id, Listing listing) {
+    public Listing updateListing(String id, Listing listing) {
         Listing existingListing = listingRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Listing not found with id " + id));
 
@@ -77,19 +77,6 @@ public class ListingService {
 
         listingRepository.delete(listing);
     }
-
-//    public List<Listing> getListingsByUserId(String userId) {
-//        if (userId == null || userId.trim().isEmpty()) {
-//            throw new IllegalArgumentException("User ID cannot be null or empty");
-//        }
-//
-//        List<Listing> listings = listingRepository.findByUserId(userId);
-//        if (listings.isEmpty()) {
-//            throw new NoSuchElementException("User with ID " + userId + " does not have any listings");
-//        }
-//
-//        return listingRepository.findByUserId(userId);
-//    }
 
     public List<Listing> getListingsByPriceRange(double minPrice, double maxPrice) {
         if (minPrice < 0 || maxPrice < 0) {
