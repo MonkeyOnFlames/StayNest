@@ -8,7 +8,6 @@ import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 public class ListingService {
@@ -38,7 +37,7 @@ public class ListingService {
 
     public Listing updateListing(String id, Listing listing) {
         Listing existingListing = listingRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Listing not found with id " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Listing not found with id " + id));
 
         //uppdatera endast icke null fält
         if (listing.getName() != null){
@@ -74,7 +73,7 @@ public class ListingService {
 
     public void deleteListing(String id) {
         Listing listing = listingRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Listing not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Listing not found with id: " + id));
 
         listingRepository.delete(listing);
     }
@@ -88,7 +87,7 @@ public class ListingService {
         }
         List<Listing> listings = listingRepository.findByPriceBetween(minPrice, maxPrice);
         if (listings.isEmpty()) {
-            throw new NoSuchElementException("No listings found within price range: " + minPrice + " - " + maxPrice);
+            throw new ResourceNotFoundException("No listings found within price range: " + minPrice + " - " + maxPrice);
         }
         return listings;
     }
