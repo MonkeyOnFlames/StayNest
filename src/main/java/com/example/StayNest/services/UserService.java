@@ -4,7 +4,6 @@ import com.example.StayNest.exceptions.ResourceNotFoundException;
 import com.example.StayNest.models.Role;
 import com.example.StayNest.models.User;
 import com.example.StayNest.repositories.UserRepository;
-import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -35,24 +34,24 @@ public class UserService {
             user.setRoles(Set.of(Role.USER));
         }
 
-        if (user.getEmail() != null) {
-            user.setEmail(user.getEmail());
-        }
-        if (user.getFirst_name() != null) {
-            user.setFirst_name(user.getFirst_name());
-        }
-        if (user.getLast_name() != null) {
-            user.setLast_name(user.getLast_name());
-        }
-        if (user.getAdress() != null) {
-            user.setAdress(user.getAdress());
-        }
-        if (user.getPhone() != null) {
-            user.setPhone(user.getPhone());
-        }
-        if (user.getAge() != null) {
-            user.setAge(user.getAge());
-        }
+//        if (user.getEmail() != null) {
+//            user.setEmail(user.getEmail());
+//        }
+//        if (user.getFirst_name() != null) {
+//            user.setFirst_name(user.getFirst_name());
+//        }
+//        if (user.getLast_name() != null) {
+//            user.setLast_name(user.getLast_name());
+//        }
+//        if (user.getAdress() != null) {
+//            user.setAdress(user.getAdress());
+//        }
+//        if (user.getPhone() != null) {
+//            user.setPhone(user.getPhone());
+//        }
+//        if (user.getAge() != null) {
+//            user.setAge(user.getAge());
+//        }
 
 
         userRepository.save(user);
@@ -65,15 +64,15 @@ public class UserService {
 
 
     //this needs to be changed when we implement register and log in
-    public User createUser(@Valid User user) {
-        if (user.getRoles() == null || user.getRoles().isEmpty()) {
-             user.setRoles(Set.of(Role.USER));
-        }
-
-        validateUser(user);
-
-        return userRepository.save(user);
-    }
+//    public User createUser(@Valid User user) {
+//        if (user.getRoles() == null || user.getRoles().isEmpty()) {
+//             user.setRoles(Set.of(Role.USER));
+//        }
+//
+//        validateUser(user);
+//
+//        return userRepository.save(user);
+//    }
 
     //find user by username
     public User findByUsername(String username) {
@@ -111,11 +110,11 @@ public class UserService {
         if (user.getEmail() != null) {
             existingUser.setEmail(user.getEmail());
         }
-        if (user.getFirst_name() != null) {
-            existingUser.setFirst_name(user.getFirst_name());
+        if (user.getFirstName() != null) {
+            existingUser.setFirstName(user.getFirstName());
         }
-        if (user.getLast_name() != null) {
-            existingUser.setLast_name(user.getLast_name());
+        if (user.getLastName() != null) {
+            existingUser.setLastName(user.getLastName());
         }
         if (user.getAdress() != null) {
             existingUser.setAdress(user.getAdress());
@@ -141,11 +140,11 @@ public class UserService {
 
     //not sure about the user.getAge. can't use trim
     private void validateUser(User user) {
-        if(user.getFirst_name() == null || user.getFirst_name().trim().isEmpty()) {
+        if(user.getFirstName() == null || user.getFirstName().trim().isEmpty()) {
             throw new IllegalArgumentException("First name can't be empty or null.");
         }
 
-        if(user.getLast_name() == null || user.getLast_name().trim().isEmpty()) {
+        if(user.getLastName() == null || user.getLastName().trim().isEmpty()) {
             throw new IllegalArgumentException("Last name can't be empty or null.");
         }
 
@@ -161,9 +160,6 @@ public class UserService {
             throw new IllegalArgumentException("The age can't be negative or null.");
         }
 
-        /*if(user.getPrice() < 0) {
-            throw new IllegalArgumentException("Product price can not be less than 0.");
-        }*/
     }
 
 

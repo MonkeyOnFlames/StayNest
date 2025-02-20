@@ -53,6 +53,13 @@ public class AuthController {
         User user = new User();
         user.setUsername(registerRequest.getUsername());
         user.setPassword(registerRequest.getPassword());
+
+        user.setEmail(registerRequest.getEmail());
+        user.setFirstName(registerRequest.getFirstName());
+        user.setLastName(registerRequest.getLastName());
+        user.setAdress(registerRequest.getAdress());
+        user.setPhone(registerRequest.getPhone());
+        user.setAge(registerRequest.getAge());
         //need more parameters
 
         // assign roles
