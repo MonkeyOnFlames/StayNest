@@ -35,6 +35,26 @@ public class UserService {
             user.setRoles(Set.of(Role.USER));
         }
 
+        if (user.getEmail() != null) {
+            user.setEmail(user.getEmail());
+        }
+        if (user.getFirst_name() != null) {
+            user.setFirst_name(user.getFirst_name());
+        }
+        if (user.getLast_name() != null) {
+            user.setLast_name(user.getLast_name());
+        }
+        if (user.getAdress() != null) {
+            user.setAdress(user.getAdress());
+        }
+        if (user.getPhone() != null) {
+            user.setPhone(user.getPhone());
+        }
+        if (user.getAge() != null) {
+            user.setAge(user.getAge());
+        }
+
+
         userRepository.save(user);
     }
 

@@ -12,6 +12,8 @@ public class RegisterRequest {
     private String password;
     private Set<Role> roles;
 
+
+
     public RegisterRequest(String username, String password, Set<Role> roles) {
         this.username = username;
         this.password = password;
