@@ -1,7 +1,7 @@
 package com.example.StayNest.controllers;
 
 import com.example.StayNest.dto.ListingResponseGetAll;
-import com.example.StayNest.dto.ListingResponseGetById;
+import com.example.StayNest.dto.ListingResponseDTO;
 import com.example.StayNest.models.Listing;
 import com.example.StayNest.services.ListingService;
 import org.springframework.http.HttpStatus;
@@ -20,14 +20,14 @@ public class ListingController {
     }
 
     @PostMapping
-    public ResponseEntity<Listing> createListing(@RequestBody Listing listing) {
-        Listing createdListing = listingService.createListing(listing);
+    public ResponseEntity<ListingResponseDTO> createListing(@RequestBody Listing listing) {
+        ListingResponseDTO createdListing = listingService.createListing(listing);
         return new ResponseEntity<>(createdListing, HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ListingResponseGetById> getListingById(@PathVariable String id) {
-        ListingResponseGetById listing = listingService.getListingsById(id);
+    public ResponseEntity<ListingResponseDTO> getListingById(@PathVariable String id) {
+        ListingResponseDTO listing = listingService.getListingsById(id);
         return new ResponseEntity<>(listing, HttpStatus.OK);
     }
 

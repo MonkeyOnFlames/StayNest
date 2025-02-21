@@ -2,8 +2,10 @@ package com.example.StayNest.dto;
 
 import com.example.StayNest.models.Enviroment;
 import com.example.StayNest.models.Listing;
+import com.example.StayNest.models.ListingType;
 
 import java.util.List;
+import java.util.Set;
 
 public class ListingResponseGetAll {
     private String id;
@@ -11,6 +13,7 @@ public class ListingResponseGetAll {
     private String name;
     private String location;
     private Double price;
+    private Set<ListingType> listingTypes;
     private List<Enviroment> environment;
     private List<String> pictureURLs;
     private List<Listing.Availability> availabilities;
@@ -56,6 +59,14 @@ public class ListingResponseGetAll {
 
     public void setPrice(Double price) {
         this.price = price;
+    }
+
+    public Set<ListingType> getListingTypes() {
+        return listingTypes;
+    }
+
+    public void setListingTypes(Set<ListingType> listingTypes) {
+        this.listingTypes = listingTypes;
     }
 
     public List<Enviroment> getEnvironment() {

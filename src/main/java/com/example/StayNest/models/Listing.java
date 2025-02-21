@@ -164,6 +164,10 @@ public class Listing {
         this.availabilities = availabilities;
     }
 
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
     public static class Availability {
         private Date startDate;
         private Date endDate;

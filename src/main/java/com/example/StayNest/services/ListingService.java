@@ -1,7 +1,7 @@
 package com.example.StayNest.services;
 
 import com.example.StayNest.dto.ListingResponseGetAll;
-import com.example.StayNest.dto.ListingResponseGetById;
+import com.example.StayNest.dto.ListingResponseDTO;
 import com.example.StayNest.exceptions.ResourceNotFoundException;
 import com.example.StayNest.models.Listing;
 import com.example.StayNest.repositories.ListingRepository;
@@ -22,20 +22,22 @@ public class ListingService {
         this.userRepository = userRepository;
     }
 
-    public Listing createListing(@Valid Listing listing) {
+    public ListingResponseDTO createListing(@Valid Listing listing) {
 
         validateListing(listing);
 
-        return listingRepository.save(listing);
+        Listing savedListing = listingRepository.save(listing);
+
+        return convertToListingResponseDTO(savedListing);
     }
 
-    public ListingResponseGetById getListingsById(String id) {
+    public ListingResponseDTO getListingsById(String id) {
 
         Listing listing = listingRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Listing with id " + id + " not found"));
 
 
-        return convertToListingResponseGetById(listing);
+        return convertToListingResponseDTO(listing);
     }
 
     public List<ListingResponseGetAll> getAllListings() {
@@ -117,7 +119,7 @@ public class ListingService {
             throw new IllegalArgumentException("Price cannot be less than 0");
         }
         if (listing.getListingTypes() == null){
-            throw new IllegalArgumentException("Type cannot be less than 0");
+            throw new IllegalArgumentException("Type cannot be null");
         }
         if (listing.getListingPolicy() == null || listing.getListingPolicy().trim().isEmpty()){
             throw new IllegalArgumentException("Description cannot be empty or null");
@@ -130,23 +132,25 @@ public class ListingService {
         }
     }
 
-    private ListingResponseGetById convertToListingResponseGetById(Listing listing){
-        ListingResponseGetById listingResponseGetById = new ListingResponseGetById();
+    private ListingResponseDTO convertToListingResponseDTO(Listing listing){
+        ListingResponseDTO listingResponseDTO = new ListingResponseDTO();
 
-        listingResponseGetById.setId(listing.getId());
-        listingResponseGetById.setUserId(listing.getUser().getId());
-        listingResponseGetById.setFirstName(listing.getUser().getFirstName());
-        listingResponseGetById.setName(listing.getName());
-        listingResponseGetById.setLocation(listing.getLocation());
-        listingResponseGetById.setDescription(listing.getDescription());
-        listingResponseGetById.setPrice(listing.getPrice());
-        listingResponseGetById.setListingPolicy(listing.getListingPolicy());
-        listingResponseGetById.setEnvironment(listing.getEnvironment());
-        listingResponseGetById.setRestrictions(listing.getRestrictions());
-        listingResponseGetById.setPictureURLs(listing.getPictureURLs());
-        listingResponseGetById.setAvailabilities(listing.getAvailabilities());
+        listingResponseDTO.setId(listing.getId());
+        listingResponseDTO.setUserId(listing.getUser().getId());
+        listingResponseDTO.setFirstName(listing.getUser().getFirstName());
+        listingResponseDTO.setName(listing.getName());
+        listingResponseDTO.setLocation(listing.getLocation());
+        listingResponseDTO.setDescription(listing.getDescription());
+        listingResponseDTO.setPrice(listing.getPrice());
+        listingResponseDTO.setListingTypes(listing.getListingTypes());
+        listingResponseDTO.setListingPolicy(listing.getListingPolicy());
+        listingResponseDTO.setEnvironment(listing.getEnvironment());
+        listingResponseDTO.setRestrictions(listing.getRestrictions());
+        listingResponseDTO.setPictureURLs(listing.getPictureURLs());
+        listingResponseDTO.setAvailabilities(listing.getAvailabilities());
+        listingResponseDTO.setCreatedAt(listing.getCreatedAt());
 
-        return listingResponseGetById;
+        return listingResponseDTO;
     }
 
     private ListingResponseGetAll convertToListingResponseGetAll(Listing listing){
@@ -156,11 +160,11 @@ public class ListingService {
         listingResponseGetAll.setName(listing.getName());
         listingResponseGetAll.setLocation(listing.getLocation());
         listingResponseGetAll.setPrice(listing.getPrice());
+        listingResponseGetAll.setListingTypes(listing.getListingTypes());
         listingResponseGetAll.setEnvironment(listing.getEnvironment());
         listingResponseGetAll.setPictureURLs(listing.getPictureURLs());
         listingResponseGetAll.setAvailabilities(listing.getAvailabilities());
 
         return listingResponseGetAll;
     }
-
 }

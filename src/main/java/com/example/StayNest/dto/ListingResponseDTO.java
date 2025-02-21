@@ -5,10 +5,11 @@ import com.example.StayNest.models.Listing;
 import com.example.StayNest.models.ListingType;
 import com.example.StayNest.models.Restrictions;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-public class ListingResponseGetById {
+public class ListingResponseDTO {
     private String id;
     private String userId;
     private String firstName;
@@ -22,9 +23,9 @@ public class ListingResponseGetById {
     private List<Restrictions> restrictions;
     private List<String> pictureURLs;
     private List<Listing.Availability> availabilities;
-    private String createdAt;
+    private Date createdAt;
 
-    public ListingResponseGetById() {
+    public ListingResponseDTO() {
     }
 
     public String getId() {
@@ -131,11 +132,11 @@ public class ListingResponseGetById {
         this.availabilities = availabilities;
     }
 
-    public String getCreatedAt() {
+    public Date getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(String createdAt) {
+    public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 }
