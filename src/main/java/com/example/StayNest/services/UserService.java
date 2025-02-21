@@ -1,8 +1,10 @@
 package com.example.StayNest.services;
 
 import com.example.StayNest.exceptions.ResourceNotFoundException;
+import com.example.StayNest.models.Listing;
 import com.example.StayNest.models.Role;
 import com.example.StayNest.models.User;
+import com.example.StayNest.repositories.ListingRepository;
 import com.example.StayNest.repositories.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,10 +20,12 @@ import java.util.Set;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ListingRepository listingRepository;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder,ListingRepository listingRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.listingRepository = listingRepository;
     }
 
     public void registerUser(User user) {
@@ -136,6 +140,18 @@ public class UserService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
         userRepository.delete(user);
+    }
+
+    public List<Listing> getUserListings(String id) {
+        //went through listingRepository to get more info about the listing
+        List<Listing> listings = listingRepository.findByUserId(id);
+        if (listings.isEmpty()) {
+                throw new ResourceNotFoundException("Listings not found with user ID: " + id);
+        }
+//        userRepository.findById(id)
+//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+//
+        return listings;
     }
 
     //not sure about the user.getAge. can't use trim
