@@ -1,5 +1,7 @@
 package com.example.StayNest.services;
 
+import com.example.StayNest.dto.ListingResponseGetAll;
+import com.example.StayNest.dto.ListingResponseGetById;
 import com.example.StayNest.exceptions.ResourceNotFoundException;
 import com.example.StayNest.models.Listing;
 import com.example.StayNest.repositories.ListingRepository;
@@ -8,6 +10,7 @@ import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ListingService {
@@ -26,13 +29,21 @@ public class ListingService {
         return listingRepository.save(listing);
     }
 
-    public Listing getListingsById(String id) {
-        return listingRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Listing not found with id " + id));
+    public ListingResponseGetById getListingsById(String id) {
+
+        Listing listing = listingRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Listing with id " + id + " not found"));
+
+
+        return convertToListingResponseGetById(listing);
     }
 
-    public List<Listing> getAllListings() {
-        return listingRepository.findAll();
+    public List<ListingResponseGetAll> getAllListings() {
+        List<Listing> listings =  listingRepository.findAll();
+
+        return listings.stream()
+                .map(this::convertToListingResponseGetAll)
+                .collect(Collectors.toList());
     }
 
     public Listing updateListing(String id, Listing listing) {
@@ -117,6 +128,39 @@ public class ListingService {
         if (listing.getAvailabilities() == null){
             throw new IllegalArgumentException("Availability cannot be empty or null");
         }
+    }
+
+    private ListingResponseGetById convertToListingResponseGetById(Listing listing){
+        ListingResponseGetById listingResponseGetById = new ListingResponseGetById();
+
+        listingResponseGetById.setId(listing.getId());
+        listingResponseGetById.setUserId(listing.getUser().getId());
+        listingResponseGetById.setFirstName(listing.getUser().getFirstName());
+        listingResponseGetById.setName(listing.getName());
+        listingResponseGetById.setLocation(listing.getLocation());
+        listingResponseGetById.setDescription(listing.getDescription());
+        listingResponseGetById.setPrice(listing.getPrice());
+        listingResponseGetById.setListingPolicy(listing.getListingPolicy());
+        listingResponseGetById.setEnvironment(listing.getEnvironment());
+        listingResponseGetById.setRestrictions(listing.getRestrictions());
+        listingResponseGetById.setPictureURLs(listing.getPictureURLs());
+        listingResponseGetById.setAvailabilities(listing.getAvailabilities());
+
+        return listingResponseGetById;
+    }
+
+    private ListingResponseGetAll convertToListingResponseGetAll(Listing listing){
+        ListingResponseGetAll listingResponseGetAll = new ListingResponseGetAll();
+        listingResponseGetAll.setId(listing.getId());
+        listingResponseGetAll.setFirstName(listing.getUser().getFirstName());
+        listingResponseGetAll.setName(listing.getName());
+        listingResponseGetAll.setLocation(listing.getLocation());
+        listingResponseGetAll.setPrice(listing.getPrice());
+        listingResponseGetAll.setEnvironment(listing.getEnvironment());
+        listingResponseGetAll.setPictureURLs(listing.getPictureURLs());
+        listingResponseGetAll.setAvailabilities(listing.getAvailabilities());
+
+        return listingResponseGetAll;
     }
 
 }
