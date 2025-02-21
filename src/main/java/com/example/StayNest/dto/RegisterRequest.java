@@ -12,12 +12,17 @@ public class RegisterRequest {
     private String password;
     private Set<Role> roles;
 
-    //@NotBlank vet inte om vi ska ha denna
+    @NotBlank
     private String email;
+    @NotBlank
     private String firstName;
+    @NotBlank
     private String lastName;
+    @NotBlank
     private String adress;
+    @NotBlank
     private String phone;
+    @NotBlank
     private Integer age;
 
     public RegisterRequest(String username, String password, Set<Role> roles, String email, String firstName, String lastName, String adress, String phone, Integer age) {
@@ -32,7 +37,6 @@ public class RegisterRequest {
         this.age = age;
     }
 
-
     public @NotBlank String getUsername() {
         return username;
     }
@@ -45,27 +49,27 @@ public class RegisterRequest {
         return roles;
     }
 
-    public String getEmail() {
+    public @NotBlank String getEmail() {
         return email;
     }
 
-    public String getFirstName() {
+    public @NotBlank String getFirstName() {
         return firstName;
     }
 
-    public String getLastName() {
+    public @NotBlank String getLastName() {
         return lastName;
     }
 
-    public String getAdress() {
+    public @NotBlank String getAdress() {
         return adress;
     }
 
-    public String getPhone() {
+    public @NotBlank String getPhone() {
         return phone;
     }
 
-    public Integer getAge() {
+    public @NotBlank Integer getAge() {
         return age;
     }
 }
