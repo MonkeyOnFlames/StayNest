@@ -40,7 +40,7 @@ private final ListingRepository listingRepository;
         return bookingRepository.findAll();
     }
 //PATCH
-    public Booking patchBooking(String userid, String bookingId, @RequestBody String listingId, boolean available){
+    public Booking updateBooking(String userid, String bookingId, @RequestBody String listingId, boolean available){
         //Här kollar vi om rätt user finns för rätt bokning genom id
         User user = userRepository.findById(userid)
                 .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
@@ -56,8 +56,8 @@ private final ListingRepository listingRepository;
         // Available är boolean: true: tillgånglig. false: uthyrd.
         booking.setAvailable(false);
         //Är det här rätt?!
-patchBooking(userid, bookingId, listingId,available).
-        setAvailable(patchBooking(userid, bookingId, listingId,available).isAvailable());
+updateBooking(userid, bookingId, listingId,available).
+        setAvailable(updateBooking(userid, bookingId, listingId,available).isAvailable());
 
         bookingRepository.save(booking);
 //ska det finnas fler getter och setters här?
