@@ -54,27 +54,27 @@ public class UserController {
         return ResponseEntity.ok(userService.updateUser(id, user));
     }
 
-//    @DeleteMapping("/{id}")
-//    @PreAuthorize("hasRole('ADMIN')")
-//    public ResponseEntity<Void> deleteUser(@PathVariable String id) {
-//        userService.deleteUser(id);
-//        return ResponseEntity.noContent().build();
-//    }
-
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> deleteUserByAdmin(@PathVariable String id) {
-        userService.deleteUser(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    //can't have the same endpoint...
-    @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     public ResponseEntity<Void> deleteUser(@PathVariable String id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
+
+//    @DeleteMapping("/admin/{id}")
+//    @PreAuthorize("hasRole('ADMIN')")
+//    public ResponseEntity<Void> deleteUserByAdmin(@PathVariable String id) {
+//        userService.deleteUserByAdmin(id);
+//        return ResponseEntity.noContent().build();
+//    }
+//
+//    //can't have the same endpoint...
+//    @DeleteMapping("/{id}")
+//    @PreAuthorize("hasRole('USER')")
+//    public ResponseEntity<Void> deleteUser(@PathVariable String id) {
+//        userService.anonymizeUser(id);
+//        return ResponseEntity.noContent().build();
+//    }
 
     @GetMapping("/{id}/listings")
     @PreAuthorize("hasAnyRole('ADMIN', 'LANDLORD')")

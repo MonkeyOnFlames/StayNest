@@ -132,16 +132,34 @@ public class UserService {
             existingUser.setAge(user.getAge());
         }
 
-
-
         return userRepository.save(existingUser);
     }
 
-//    public void deleteUser(String id) {
+//    public void deleteUserByAdmin(String id) {
 //        User user = userRepository.findById(id)
 //                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 //
 //        userRepository.delete(user);
+//    }
+//
+//    public void anonymizeUser(String id) {
+//        UserDetails currentUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//        User user = userRepository.findByUsername(currentUser.getUsername())
+//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+//
+//        user.setUsername(null);
+//        user.setEmail(null);
+//        user.setPassword(null);
+//        user.setFirstName(null);
+//        user.setLastName(null);
+//        user.setPhone(null);
+//        user.setAdress(null);
+//        user.setAge(null);
+//        user.setRoles(Set.of(Role.ANONYMOUS));
+//
+//        userRepository.save(user);
+//
+//
 //    }
 
     public void deleteUser(String id) {
@@ -149,16 +167,14 @@ public class UserService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
         UserDetails currentUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
         boolean isAdmin = userRepository.existsByUsernameAndRolesContaining(currentUser.getUsername(), Role.ADMIN);
-
 
         //if admin delete a user account
         if (isAdmin) {
             userRepository.delete(user);
-        //if user choose to delete their account
-        } else {
-            //String anonymizeUsername = user.getUsername();
+        }
+        //if user delete their own account, make user ANONYMOUS
+        else if (user.getUsername().equals(currentUser.getUsername())){
             user.setUsername(null);
             user.setEmail(null);
             user.setPassword(null);
@@ -170,8 +186,9 @@ public class UserService {
             user.setRoles(Set.of(Role.ANONYMOUS));
 
             userRepository.save(user);
+        } else {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
-
 
     }
 
