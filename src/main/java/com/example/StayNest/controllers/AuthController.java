@@ -8,22 +8,21 @@ import com.example.StayNest.models.Role;
 import com.example.StayNest.models.User;
 import com.example.StayNest.services.UserService;
 import com.example.StayNest.util.JwtUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
 
@@ -128,5 +127,49 @@ public class AuthController {
                     .body("Incorrect username or password");
         }
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout (HttpServletRequest request, HttpServletResponse response) {
+        //create an expired cookie to replace the existing jwt cookie
+        ResponseCookie jwtCookie = ResponseCookie.from("jwt", "")
+                .httpOnly(true)
+                .secure(false)
+                .path("/")
+                .maxAge(0)
+                .sameSite("Strict") // Lax & None
+                .build();
+        //response.addHeader(HttpHeaders.SET_COOKIE, jwtCookie.toString());
+
+        SecurityContextHolder.getContext();
+
+        //return a message with an expired cookie
+        return ResponseEntity.ok()
+                //hade kunnat ta bort denna och använda rad 141
+                .header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
+                .body("Logout successful");
+    }
+
+    //check if a user is authenticated
+    @GetMapping("/check")
+    public ResponseEntity<?> checkAuthentication() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        //control if user is authenticated
+        if(authentication == null || !authentication.isAuthenticated() || !(authentication instanceof AnonymousAuthenticationToken)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not authenticated");
+        }
+
+        //return user info if authenticated
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        User user = userService.findByUsername(userDetails.getUsername());
+
+        return ResponseEntity.ok(new AuthResponse(
+                "Authenticated",
+                user.getUsername(),
+                user.getRoles()
+        ));
+    }
+
+
 
 }

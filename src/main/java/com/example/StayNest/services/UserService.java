@@ -7,6 +7,8 @@ import com.example.StayNest.models.User;
 import com.example.StayNest.repositories.ListingRepository;
 import com.example.StayNest.repositories.UserRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -135,11 +137,42 @@ public class UserService {
         return userRepository.save(existingUser);
     }
 
+//    public void deleteUser(String id) {
+//        User user = userRepository.findById(id)
+//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+//
+//        userRepository.delete(user);
+//    }
+
     public void deleteUser(String id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
-        userRepository.delete(user);
+        UserDetails currentUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        boolean isAdmin = userRepository.existsByUsernameAndRolesContaining(currentUser.getUsername(), Role.ADMIN);
+
+
+        //if admin delete a user account
+        if (isAdmin) {
+            userRepository.delete(user);
+        //if user choose to delete their account
+        } else {
+            //String anonymizeUsername = user.getUsername();
+            user.setUsername(null);
+            user.setEmail(null);
+            user.setPassword(null);
+            user.setFirstName(null);
+            user.setLastName(null);
+            user.setPhone(null);
+            user.setAdress(null);
+            user.setAge(null);
+            user.setRoles(Set.of(Role.ANONYMOUS));
+
+            userRepository.save(user);
+        }
+
+
     }
 
     public List<Listing> getUserListings(String id) {
@@ -153,6 +186,8 @@ public class UserService {
 //
         return listings;
     }
+
+
 
     //not sure about the user.getAge. can't use trim
     private void validateUser(User user) {
