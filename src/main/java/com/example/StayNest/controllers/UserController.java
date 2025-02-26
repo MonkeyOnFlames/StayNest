@@ -68,6 +68,7 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    //can't have the same endpoint...
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Void> deleteUser(@PathVariable String id) {
