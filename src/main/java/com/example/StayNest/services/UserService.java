@@ -1,14 +1,14 @@
 package com.example.StayNest.services;
 
 import com.example.StayNest.exceptions.ResourceNotFoundException;
+import com.example.StayNest.models.Booking;
 import com.example.StayNest.models.Listing;
 import com.example.StayNest.models.Role;
 import com.example.StayNest.models.User;
+import com.example.StayNest.repositories.BookingRepository;
 import com.example.StayNest.repositories.ListingRepository;
 import com.example.StayNest.repositories.UserRepository;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,11 +22,13 @@ import java.util.Set;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final BookingRepository bookingRepository;
     private final ListingRepository listingRepository;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder,ListingRepository listingRepository) {
+    public UserService(UserRepository userRepository, BookingRepository bookingRepository, ListingRepository listingRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.bookingRepository = bookingRepository;
         this.listingRepository = listingRepository;
     }
 
@@ -39,26 +41,6 @@ public class UserService {
         if(user.getRoles() == null || user.getRoles().isEmpty()) {
             user.setRoles(Set.of(Role.USER));
         }
-
-//        if (user.getEmail() != null) {
-//            user.setEmail(user.getEmail());
-//        }
-//        if (user.getFirst_name() != null) {
-//            user.setFirst_name(user.getFirst_name());
-//        }
-//        if (user.getLast_name() != null) {
-//            user.setLast_name(user.getLast_name());
-//        }
-//        if (user.getAdress() != null) {
-//            user.setAdress(user.getAdress());
-//        }
-//        if (user.getPhone() != null) {
-//            user.setPhone(user.getPhone());
-//        }
-//        if (user.getAge() != null) {
-//            user.setAge(user.getAge());
-//        }
-
 
         userRepository.save(user);
     }
@@ -190,20 +172,26 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
 
+    public List<Booking> getUserBookings(String id) {
+        //went through listingRepository to get more info about the listing
+        List<Booking> bookings = bookingRepository.findByUserId(id);
+        if (bookings.isEmpty()) {
+            throw new ResourceNotFoundException("Listings not found with user ID: " + id);
+        }
+        return bookings;
     }
 
-    public List<Listing> getUserListings(String id) {
-        //went through listingRepository to get more info about the listing
-        List<Listing> listings = listingRepository.findByUserId(id);
-        if (listings.isEmpty()) {
+        public List<Listing> getUserListings(String id) {
+            //went through listingRepository to get more info about the listing
+            List<Listing> listings = listingRepository.findByUserId(id);
+            if (listings.isEmpty()) {
                 throw new ResourceNotFoundException("Listings not found with user ID: " + id);
-        }
+            }
 //        userRepository.findById(id)
 //                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 //
-        return listings;
-    }
-
+            return listings;
+        }
 
 
     //not sure about the user.getAge. can't use trim
@@ -228,6 +216,9 @@ public class UserService {
             throw new IllegalArgumentException("The age can't be negative or null.");
         }
 
+        /*if(user.getPrice() < 0) {
+            throw new IllegalArgumentException("Product price can not be less than 0.");
+        }*/
     }
 
 
