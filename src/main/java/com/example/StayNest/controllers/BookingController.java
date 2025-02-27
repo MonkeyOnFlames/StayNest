@@ -19,8 +19,9 @@ import java.util.Optional;
 @RequestMapping("/api/bookings")
 public class BookingController {
     private final BookingService bookingService;
-private final BookingRepository bookingRepository;
-private final UserRepository userRepository;
+    private final BookingRepository bookingRepository;
+    private final UserRepository userRepository;
+
     public BookingController(BookingService bookingService, BookingRepository bookingRepository, UserRepository userRepository) {
         this.bookingService = bookingService;
         this.bookingRepository = bookingRepository;
@@ -28,9 +29,9 @@ private final UserRepository userRepository;
     }
 
     @PostMapping
-    public ResponseEntity<Booking> createBooking(@Valid @RequestBody Booking booking){
+    public ResponseEntity<Booking> createBooking(@RequestBody Booking booking){
         Booking createdBooking = bookingService.createBooking(booking);
-        return new ResponseEntity<>(booking, HttpStatus.CREATED);
+        return new ResponseEntity<>(createdBooking, HttpStatus.CREATED);
     }
 
     /*@GetMapping
@@ -40,32 +41,35 @@ private final UserRepository userRepository;
     }
 
      */
-//Hitta en bokning genom id
 
+//Hitta en bokning genom id
     @GetMapping("/{id}")
     public ResponseEntity<Booking> getBookingById (@PathVariable String id){
         Booking booking = bookingRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Plant not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Booking not found"));
         return ResponseEntity.ok(booking);
     }
+
 //Se vilken user har gjort vilken bookning
     @GetMapping("/{userId}")
     public ResponseEntity<Booking> getUserBookingById (@PathVariable String id, @RequestBody Booking booking){
         Optional<User> user = userRepository.findById(id);
         Booking getUserBookingById = bookingRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Plant not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Booking not found"));
         return ResponseEntity.ok(booking);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Booking> deleteBooking(@PathVariable String id) {
         if (!bookingRepository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Plant not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Booking not found");
         }
 
         bookingRepository.deleteById(id);
         return ResponseEntity.noContent().build();
 
-
     }
+
+
+
 }

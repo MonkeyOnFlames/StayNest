@@ -25,9 +25,9 @@ import java.util.*;
 @Service
 public class BookingService {
 
-private final BookingRepository bookingRepository;
-private final UserRepository userRepository;
-private final ListingRepository listingRepository;
+    private final BookingRepository bookingRepository;
+    private final UserRepository userRepository;
+    private final ListingRepository listingRepository;
 
     public BookingService(BookingRepository bookingRepository, UserRepository userRepository, ListingRepository listingRepository) {
         this.bookingRepository = bookingRepository;
@@ -36,26 +36,15 @@ private final ListingRepository listingRepository;
     }
 
     public Booking createBooking(Booking booking) {
-        if (booking.getId() == null || booking.getId().isEmpty()) {
+        /*if (booking.getId() == null || booking.getId().isEmpty()) {
             throw new IllegalArgumentException("Booking id cannot be empty");
         }
         if (booking.getListingId() == null || booking.getListingId().isEmpty()) {
             throw new IllegalArgumentException("Booking Description can not be empty");
-        }
+        }*/
 
-
-        SimpleDateFormat startDate = new SimpleDateFormat("YYYY-MM-DD");
-        SimpleDateFormat endDate = new SimpleDateFormat("YYYY-MM-DD");
-
-// create new booking, creation time, user that made the booking, witch listing is booked,
-// total amount, start and end date
-        Booking newBooking = new Booking();
-        newBooking.setCreatedAt(new Date());
-        newBooking.setUserId(newBooking.getUserId());
-        newBooking.setListingId(newBooking.getListingId());
-        newBooking.setTotalAmount(newBooking.getTotalAmount());
-        newBooking.setStartDate(new Date());
-        newBooking.setEndDate(new Date());
+//        SimpleDateFormat startDate = new SimpleDateFormat("YYYY-MM-DD");
+//        SimpleDateFormat endDate = new SimpleDateFormat("YYYY-MM-DD");
 
         return bookingRepository.save(booking);
     }
