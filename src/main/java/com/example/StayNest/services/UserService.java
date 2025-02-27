@@ -158,7 +158,7 @@ public class UserService {
             userRepository.delete(user);
         }
         //if user delete their own account, make user ANONYMOUS
-        else if (user.getUsername().equals(currentUser.getUsername())){
+        else if (user.getUsername().equals(currentUser.getUsername())) {
             user.setUsername(null);
             user.setEmail(null);
             user.setPassword(null);
@@ -173,6 +173,7 @@ public class UserService {
         } else {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
+    }
 
     public List<Booking> getUserBookings(String id) {
         //went through listingRepository to get more info about the listing
@@ -226,4 +227,4 @@ public class UserService {
 
 
 }
-}
+
