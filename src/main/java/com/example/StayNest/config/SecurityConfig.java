@@ -51,6 +51,7 @@ public class SecurityConfig {
                         .requestMatchers("/landlord/**").hasAnyRole("LANDLORD", "ADMIN")
                         .requestMatchers("/user/**").hasAnyRole("USER", "LANDLORD", "ADMIN")
                         .requestMatchers("/api/users/**").permitAll()
+                        .requestMatchers("/api/bookings/**").permitAll()
                         .requestMatchers("/api/listings/**").permitAll()
                         .requestMatchers("/auth/**").permitAll()
                         //any other requests the user need to be logged

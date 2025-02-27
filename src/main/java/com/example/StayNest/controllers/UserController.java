@@ -1,6 +1,7 @@
 package com.example.StayNest.controllers;
 
 import com.example.StayNest.models.Listing;
+import com.example.StayNest.models.Booking;
 import com.example.StayNest.models.User;
 import com.example.StayNest.services.UserService;
 import org.springframework.http.HttpStatus;
@@ -52,6 +53,13 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<User> updateUser(@PathVariable String id, /*@Valid */@RequestBody User user){
         return ResponseEntity.ok(userService.updateUser(id, user));
+    }
+
+    @GetMapping("/{id}/bookings")
+    //@PreAuthorize("hasAnyRole('ADMIN', 'LANDLORD')")
+    public ResponseEntity<List<Booking>> getUserBookings(@PathVariable String id) {
+        List<Booking> userBookings = userService.getUserBookings(id);
+        return new ResponseEntity<>(userBookings, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
