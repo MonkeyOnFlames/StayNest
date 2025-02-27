@@ -1,26 +1,13 @@
 package com.example.StayNest.services;
 
-import com.example.StayNest.exceptions.ResourceNotFoundException;
-import com.example.StayNest.exceptions.UnauthorizedException;
 import com.example.StayNest.models.Booking;
-import com.example.StayNest.models.Listing;
-import com.example.StayNest.models.User;
 import com.example.StayNest.repositories.BookingRepository;
 import com.example.StayNest.repositories.ListingRepository;
 import com.example.StayNest.repositories.UserRepository;
-import org.springframework.data.annotation.Id;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.List;
 
 @Service
 public class BookingService {
@@ -35,51 +22,79 @@ public class BookingService {
         this.listingRepository = listingRepository;
     }
 
-    public Booking createBooking(Booking booking) {
-        /*if (booking.getId() == null || booking.getId().isEmpty()) {
-            throw new IllegalArgumentException("Booking id cannot be empty");
-        }
-        if (booking.getListingId() == null || booking.getListingId().isEmpty()) {
-            throw new IllegalArgumentException("Booking Description can not be empty");
-        }*/
+    public Booking createBooking(@Valid Booking booking) {
+
+        validateBooking(booking);
 
 //        SimpleDateFormat startDate = new SimpleDateFormat("YYYY-MM-DD");
 //        SimpleDateFormat endDate = new SimpleDateFormat("YYYY-MM-DD");
 
+
         return bookingRepository.save(booking);
     }
 
+    public Booking getBookingsById(String id) {
+        return bookingRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Listing not found with id " + id));
+    }
+
+    public List<Booking> getAllBookings() {
+        return bookingRepository.findAll();
+    }
 
 
 //PATCH
-   /* public Booking updateBooking(String userid, String bookingId, @RequestBody String listingId, boolean available){
-        //Här kollar vi om rätt user finns för rätt bokning genom id
-        User user = userRepository.findById(userid)
-                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+   public Booking updateBooking(String id, Booking booking){
+       Booking existingBooking = bookingRepository.findById(id)
+               .orElseThrow(() -> new IllegalArgumentException("Booking not found with id " + id));
 
-        //Här kollar vi om vi hittar rätt bokning genom id
-        Booking booking = bookingRepository.findById(bookingId)
-                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Booking not found"));
+       //uppdatera endast icke null fält
+       if (booking.getListing() != null){
+           existingBooking.setListing(booking.getListing());
+       }
+       if (booking.getUser() != null){
+           existingBooking.setUser(booking.getUser());
+       }
+       if (booking.getReview() != null){
+           existingBooking.setReview(booking.getReview());
+       }
+       if (booking.getTotalAmount() != null){
+           existingBooking.setTotalAmount(booking.getTotalAmount());
+       }
+       if (booking.getStartDate() != null){
+           existingBooking.setStartDate(booking.getStartDate());
+       }
+       if (booking.getEndDate() != null){
+           existingBooking.setEndDate(booking.getEndDate());
+       }
 
-        // Här kollar vi om rätt listing finns genom id
-        Listing listing = listingRepository.findById(listingId)
-                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Listing not found"));
-
-
-        booking.setAvailable(false);
-        //Är det här rätt?!
-updateBooking(userid, bookingId, listingId,available).
-        setAvailable(updateBooking(userid, bookingId, listingId,available).isAvailable());
-
-        bookingRepository.save(booking);
-//ska det finnas fler getter och setters här?
-        booking.setTotalAmount(booking.getTotalAmount());
-        booking.setCreatedAt(new Date());
-
-        //Varför är den här fel?!
-        return ResponseEntity.ok(Booking);
+       return bookingRepository.save(existingBooking);
     }
 
-    */
+    public void deleteBooking(String id) {
+        Booking booking = bookingRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Booking not found with id: " + id));
+
+        bookingRepository.delete(booking);
+    }
+
+    private void validateBooking(Booking booking){
+        if (booking.getListing() == null){
+            throw new IllegalArgumentException("Listing cannot be empty or null");
+        }
+        if (booking.getUser() == null){
+            throw new IllegalArgumentException("User cannot be empty or null");
+        }
+        if (booking.getTotalAmount() < 0){
+            throw new IllegalArgumentException("Price cannot be less than 0");
+        }
+        if (booking.getStartDate() == null){
+            throw new IllegalArgumentException("Start date cannot be null");
+        }
+        if (booking.getEndDate() == null){
+            throw new IllegalArgumentException("End date cannot be null");
+        }
+
+    }
 
 }

@@ -1,13 +1,14 @@
 package com.example.StayNest.models;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.Collections;
 import java.util.Date;
 
 @Document(collection = "bookings")
@@ -18,12 +19,12 @@ public class Booking {
     @NotNull(message = "Listings ID can not me null")
     @NotEmpty(message = "Listings ID can not be empty")
     @DBRef
-    private String listingId;
+    private Listing listing;
 
     @NotNull(message = "User ID can not be null")
     @NotEmpty(message = "User ID can not be empty")
     @DBRef
-    private String userId;
+    private User user;
 
     private String review;
 
@@ -52,20 +53,20 @@ public class Booking {
         this.id = id;
     }
 
-    public @NotNull(message = "Listings ID can not me null") @NotEmpty(message = "Listings ID can not be empty") String getListingId() {
-        return listingId;
+    public @NotNull(message = "Listings ID can not me null") @NotEmpty(message = "Listings ID can not be empty") Listing getListing() {
+        return listing;
     }
 
-    public void setListingId(@NotNull(message = "Listings ID can not me null") @NotEmpty(message = "Listings ID can not be empty") String listingId) {
-        this.listingId = listingId;
+    public void setListing(@NotNull(message = "Listings ID can not me null") @NotEmpty(message = "Listings ID can not be empty") Listing listing) {
+        this.listing = listing;
     }
 
-    public @NotNull(message = "User ID can not be null") @NotEmpty(message = "User ID can not be empty") String getUserId() {
-        return userId;
+    public @NotNull(message = "User ID can not be null") @NotEmpty(message = "User ID can not be empty") User getUser() {
+        return user;
     }
 
-    public void setUserId(@NotNull(message = "User ID can not be null") @NotEmpty(message = "User ID can not be empty") String userId) {
-        this.userId = userId;
+    public void setUser(@NotNull(message = "User ID can not be null") @NotEmpty(message = "User ID can not be empty") User user) {
+        this.user = user;
     }
 
     public String getReview() {
