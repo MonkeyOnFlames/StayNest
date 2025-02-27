@@ -33,11 +33,13 @@ private final UserRepository userRepository;
         return new ResponseEntity<>(booking, HttpStatus.CREATED);
     }
 
-    @GetMapping
+    /*@GetMapping
     public ResponseEntity<List<Booking>> getAllBookings(){
         List<Booking> bookings = bookingService.getAllBookings();
         return new ResponseEntity<>(bookings, HttpStatus.OK);
     }
+
+     */
 //Hitta en bokning genom id
 
     @GetMapping("/{id}")
