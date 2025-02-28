@@ -22,7 +22,7 @@ public class RegisterRequest {
     private String adress;
     @NotBlank
     private String phone;
-    @NotBlank
+    //@NotBlank
     private Integer age;
 
     public RegisterRequest(String username, String password, Set<Role> roles, String email, String firstName, String lastName, String adress, String phone, Integer age) {
@@ -69,7 +69,7 @@ public class RegisterRequest {
         return phone;
     }
 
-    public @NotBlank Integer getAge() {
+    public Integer getAge() {
         return age;
     }
 }

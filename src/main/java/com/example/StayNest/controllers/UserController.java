@@ -50,20 +50,27 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LANDLORD', 'USER')")
     public ResponseEntity<User> updateUser(@PathVariable String id, /*@Valid */@RequestBody User user){
         return ResponseEntity.ok(userService.updateUser(id, user));
     }
 
+    @GetMapping("/{id}/listings")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LANDLORD')")
+    public ResponseEntity<List<Listing>> getUserListings(@PathVariable String id) {
+        List<Listing> userListings = userService.getUserListings(id);
+        return new ResponseEntity<>(userListings, HttpStatus.OK);
+    }
+
     @GetMapping("/{id}/bookings")
-    //@PreAuthorize("hasAnyRole('ADMIN', 'LANDLORD')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LANDLORD')")
     public ResponseEntity<List<Booking>> getUserBookings(@PathVariable String id) {
         List<Booking> userBookings = userService.getUserBookings(id);
         return new ResponseEntity<>(userBookings, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
+    @PreAuthorize("hasRole('ADMIN') or hasAnyRole('USER', 'LANDLORD')")
     public ResponseEntity<Void> deleteUser(@PathVariable String id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
@@ -84,11 +91,6 @@ public class UserController {
 //        return ResponseEntity.noContent().build();
 //    }
 
-    @GetMapping("/{id}/listings")
-    @PreAuthorize("hasAnyRole('ADMIN', 'LANDLORD')")
-    public ResponseEntity<List<Listing>> getUserListings(@PathVariable String id) {
-        List<Listing> userListings = userService.getUserListings(id);
-        return new ResponseEntity<>(userListings, HttpStatus.OK);
-    }
+
 
 }
