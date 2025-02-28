@@ -1,15 +1,23 @@
 package com.example.StayNest.services;
 
-import com.example.StayNest.dto.ListingResponseGetAll;
 import com.example.StayNest.dto.ListingResponseDTO;
+import com.example.StayNest.dto.ListingResponseGetAll;
 import com.example.StayNest.exceptions.ResourceNotFoundException;
+import com.example.StayNest.exceptions.UnauthorizedException;
 import com.example.StayNest.models.Listing;
+import com.example.StayNest.models.Role;
+import com.example.StayNest.models.User;
 import com.example.StayNest.repositories.ListingRepository;
 import com.example.StayNest.repositories.UserRepository;
 import jakarta.validation.Valid;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,6 +31,16 @@ public class ListingService {
     }
 
     public ListingResponseDTO createListing(@Valid Listing listing) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated() || authentication instanceof AnonymousAuthenticationToken) {
+            throw new UnauthorizedException("User is not authenticated");
+        }
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        User user = userRepository.findByUsername(userDetails.getUsername())
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        user.setRoles(Set.of(Role.LANDLORD));
+        listing.setUser(user);
 
         validateListing(listing);
 

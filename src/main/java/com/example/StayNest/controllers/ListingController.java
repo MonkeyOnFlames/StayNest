@@ -1,11 +1,12 @@
 package com.example.StayNest.controllers;
 
-import com.example.StayNest.dto.ListingResponseGetAll;
 import com.example.StayNest.dto.ListingResponseDTO;
+import com.example.StayNest.dto.ListingResponseGetAll;
 import com.example.StayNest.models.Listing;
 import com.example.StayNest.services.ListingService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public class ListingController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('USER', 'LANDLORD', 'ADMIN')")
     public ResponseEntity<ListingResponseDTO> createListing(@RequestBody Listing listing) {
         ListingResponseDTO createdListing = listingService.createListing(listing);
         return new ResponseEntity<>(createdListing, HttpStatus.CREATED);
@@ -38,11 +40,13 @@ public class ListingController {
     }
 
     @PatchMapping("/{id}")
+    @PreAuthorize("hasAnyRole('LANDLORD', 'ADMIN')")
     public ResponseEntity<Listing> updateListing(@PathVariable String id, @RequestBody Listing listing) {
         return ResponseEntity.ok(listingService.updateListing(id, listing));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('LANDLORD', 'ADMIN')")
     public ResponseEntity<Void> deleteListing(@PathVariable String id) {
         listingService.deleteListing(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
