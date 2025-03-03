@@ -1,6 +1,7 @@
 package com.example.StayNest.services;
 
 import com.example.StayNest.models.Booking;
+import com.example.StayNest.models.Listing;
 import com.example.StayNest.repositories.BookingRepository;
 import com.example.StayNest.repositories.ListingRepository;
 import com.example.StayNest.repositories.UserRepository;
@@ -94,7 +95,40 @@ public class BookingService {
         if (booking.getEndDate() == null){
             throw new IllegalArgumentException("End date cannot be null");
         }
+        if (booking.getEndDate().before(booking.getStartDate())){
+            throw new IllegalArgumentException("End date cannot be before start date");
+        }
 
+        for (Listing.Availability availability : listingRepository.findListingById(booking.getListing().getId()).getAvailabilities()){
+            int i = 0;
+            if ((booking.getStartDate().equals(availability.getStartDate()) || booking.getStartDate().after(availability.getStartDate()))
+                    && (booking.getEndDate().equals(availability.getEndDate()) || booking.getEndDate().before(availability.getEndDate()))){
+
+                if (booking.getStartDate().equals(availability.getStartDate())){
+                    availability.setStartDate(booking.getEndDate()); // +1 dag
+                }
+                else if (booking.getEndDate().equals(availability.getEndDate())) {
+                    availability.setEndDate(booking.getStartDate()); // -1 dag
+                }
+                else if (booking.getStartDate().equals(availability.getStartDate()) && booking.getEndDate().equals(availability.getEndDate())) {
+                    listingRepository.findListingById(booking.getListing().getId()).getAvailabilities().remove(availability);
+                }
+                else {
+                    Listing.Availability newAvailability = new Listing.Availability();
+                    newAvailability.setStartDate(booking.getEndDate()); // +1 dag
+                    newAvailability.setEndDate(availability.getEndDate());
+                    availability.setEndDate(booking.getStartDate()); //-1 dag
+
+                    listingRepository.findListingById(booking.getListing().getId()).getAvailabilities().add(newAvailability);
+                }
+                break;
+            } else {
+                i++;
+                if (i >= listingRepository.findListingById(booking.getListing().getId()).getAvailabilities().size()){
+                    throw new IllegalArgumentException("The chosen date is not available");
+                }
+            }
+        }
     }
 
 }
