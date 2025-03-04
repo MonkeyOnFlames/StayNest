@@ -159,7 +159,7 @@ public class UserService {
             userRepository.save(user);
 
         } else {
-            throw new UnauthorizedException("You do not have permission to delete this booking.");
+            throw new UnauthorizedException("You do not have permission to delete this user.");
         }
     }
 
