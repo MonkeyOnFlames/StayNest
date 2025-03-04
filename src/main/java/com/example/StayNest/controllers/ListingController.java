@@ -41,7 +41,7 @@ public class ListingController {
 
     @PatchMapping("/{id}")
     @PreAuthorize("hasAnyRole('LANDLORD', 'ADMIN')")
-    public ResponseEntity<Listing> updateListing(@PathVariable String id, @RequestBody Listing listing) {
+    public ResponseEntity<ListingResponseDTO> updateListing(@PathVariable String id, @RequestBody Listing listing) {
         return ResponseEntity.ok(listingService.updateListing(id, listing));
     }
 
@@ -49,7 +49,7 @@ public class ListingController {
     @PreAuthorize("hasAnyRole('LANDLORD', 'ADMIN')")
     public ResponseEntity<Void> deleteListing(@PathVariable String id) {
         listingService.deleteListing(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.noContent().build();
     }
 
 

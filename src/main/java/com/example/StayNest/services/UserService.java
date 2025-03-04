@@ -1,14 +1,17 @@
 package com.example.StayNest.services;
 
 import com.example.StayNest.exceptions.ResourceNotFoundException;
+import com.example.StayNest.exceptions.UnauthorizedException;
 import com.example.StayNest.models.Booking;
-import com.example.StayNest.models.Listing;
 import com.example.StayNest.models.Role;
 import com.example.StayNest.models.User;
 import com.example.StayNest.repositories.BookingRepository;
 import com.example.StayNest.repositories.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -163,6 +166,16 @@ public class UserService {
         }*/
     }
 
+    public User getLoggedInUser(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated() || authentication instanceof org.springframework.security.authentication.AnonymousAuthenticationToken) {
+            throw new UnauthorizedException("User is not authenticated");
+        }
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        User user = userRepository.findByUsername(userDetails.getUsername())
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
+        return user;
+    }
 
 }

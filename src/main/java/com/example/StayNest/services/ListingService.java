@@ -10,10 +10,6 @@ import com.example.StayNest.models.User;
 import com.example.StayNest.repositories.ListingRepository;
 import com.example.StayNest.repositories.UserRepository;
 import jakarta.validation.Valid;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,25 +20,22 @@ import java.util.stream.Collectors;
 public class ListingService {
     private final ListingRepository listingRepository;
     private final UserRepository userRepository;
+    private final UserService userService;
 
-    public ListingService(ListingRepository repository, UserRepository userRepository) {
+    public ListingService(ListingRepository repository, UserRepository userRepository, UserService userService) {
         this.listingRepository = repository;
         this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     public ListingResponseDTO createListing(@Valid Listing listing) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated() || authentication instanceof AnonymousAuthenticationToken) {
-            throw new UnauthorizedException("User is not authenticated");
-        }
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        User user = userRepository.findByUsername(userDetails.getUsername())
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        if (user.getRoles().equals(Set.of(Role.USER))) {
-            user.setRoles(Set.of(Role.LANDLORD));
+        User loggedInUser = userService.getLoggedInUser();
+
+        if (loggedInUser.getRoles().equals(Set.of(Role.USER))) {
+            loggedInUser.setRoles(Set.of(Role.LANDLORD));
         }
-        listing.setUser(user);
+        listing.setUser(loggedInUser);
 
         validateListing(listing);
 
@@ -68,50 +61,65 @@ public class ListingService {
                 .collect(Collectors.toList());
     }
 
-    public Listing updateListing(String id, Listing listing) {
+    public ListingResponseDTO updateListing(String id, Listing listing) {
         Listing existingListing = listingRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Listing not found with id " + id));
 
-        //uppdatera endast icke null fält
-        if (listing.getName() != null){
-            existingListing.setName(listing.getName());
-        }
-        if (listing.getLocation() != null){
-            existingListing.setLocation(listing.getLocation());
-        }
-        if (listing.getDescription() != null){
-            existingListing.setDescription(listing.getDescription());
-        }
-        if (listing.getPrice() != null){
-            existingListing.setPrice(listing.getPrice());
-        }
-        if (listing.getListingTypes() != null){
-            existingListing.setListingTypes(listing.getListingTypes());
-        }
-        if (listing.getListingPolicy() != null){
-            existingListing.setListingPolicy(listing.getListingPolicy());
-        }
-        if (listing.getEnvironment() != null){
-            existingListing.setEnvironment(listing.getEnvironment());
-        }
-        if (listing.getRestrictions() != null){
-            existingListing.setRestrictions(listing.getRestrictions());
-        }
-        if (listing.getPictureURLs() != null){
-            existingListing.setPictureURLs(listing.getPictureURLs());
-        }
-        if (listing.getAvailabilities() != null){
-            existingListing.setAvailabilities(listing.getAvailabilities());
+        User loggedInUser = userService.getLoggedInUser();
+
+        if (loggedInUser.getUsername().equals(existingListing.getUser().getUsername())) {
+            //uppdatera endast icke null fält
+            if (listing.getName() != null){
+                existingListing.setName(listing.getName());
+            }
+            if (listing.getLocation() != null){
+                existingListing.setLocation(listing.getLocation());
+            }
+            if (listing.getDescription() != null){
+                existingListing.setDescription(listing.getDescription());
+            }
+            if (listing.getPrice() != null){
+                existingListing.setPrice(listing.getPrice());
+            }
+            if (listing.getListingTypes() != null){
+                existingListing.setListingTypes(listing.getListingTypes());
+            }
+            if (listing.getListingPolicy() != null){
+                existingListing.setListingPolicy(listing.getListingPolicy());
+            }
+            if (listing.getEnvironment() != null){
+                existingListing.setEnvironment(listing.getEnvironment());
+            }
+            if (listing.getRestrictions() != null){
+                existingListing.setRestrictions(listing.getRestrictions());
+            }
+            if (listing.getPictureURLs() != null){
+                existingListing.setPictureURLs(listing.getPictureURLs());
+            }
+            if (listing.getAvailabilities() != null){
+                existingListing.setAvailabilities(listing.getAvailabilities());
+            }
+        } else {
+            throw new UnauthorizedException("You do not have permission to update this booking.");
         }
 
-        return listingRepository.save(existingListing);
+        Listing updatedListing = listingRepository.save(existingListing);
+
+        return convertToListingResponseDTO(updatedListing);
     }
 
     public void deleteListing(String id) {
+
         Listing listing = listingRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Listing not found with id: " + id));
 
-        listingRepository.delete(listing);
+        User loggedInUser = userService.getLoggedInUser();
+
+        if (loggedInUser.getUsername().equals(listing.getUser().getUsername())) {
+            listingRepository.delete(listing);
+        } else {
+            throw new UnauthorizedException("You do not have permission to delete this booking.");
+        }
     }
 
     public List<Listing> getListingsByPriceRange(double minPrice, double maxPrice) {
