@@ -1,11 +1,20 @@
 package com.example.StayNest.services;
 
+import com.example.StayNest.dto.BookingResponseDTO;
+import com.example.StayNest.exceptions.ResourceNotFoundException;
+import com.example.StayNest.exceptions.UnauthorizedException;
 import com.example.StayNest.models.Booking;
 import com.example.StayNest.models.Listing;
+import com.example.StayNest.models.User;
+import com.example.StayNest.services.UserService;
 import com.example.StayNest.repositories.BookingRepository;
 import com.example.StayNest.repositories.ListingRepository;
 import com.example.StayNest.repositories.UserRepository;
 import jakarta.validation.Valid;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,67 +25,84 @@ public class BookingService {
     private final BookingRepository bookingRepository;
     private final UserRepository userRepository;
     private final ListingRepository listingRepository;
+    private final UserService userService;
 
-    public BookingService(BookingRepository bookingRepository, UserRepository userRepository, ListingRepository listingRepository) {
+    public BookingService(BookingRepository bookingRepository, UserRepository userRepository, ListingRepository listingRepository, UserService userService) {
         this.bookingRepository = bookingRepository;
         this.userRepository = userRepository;
         this.listingRepository = listingRepository;
+        this.userService = userService;
     }
 
-    public Booking createBooking(@Valid Booking booking) {
+    public BookingResponseDTO createBooking(@Valid Booking booking) {
+
+        User loggedInUser = userService.getLoggedInUser();
+
+        booking.setUser(loggedInUser);
 
         validateBooking(booking);
 
-//        SimpleDateFormat startDate = new SimpleDateFormat("YYYY-MM-DD");
-//        SimpleDateFormat endDate = new SimpleDateFormat("YYYY-MM-DD");
+        Booking savedBooking = bookingRepository.save(booking);
 
 
-        return bookingRepository.save(booking);
+        return convertToBookingResponseDTO(savedBooking);
     }
 
-    public Booking getBookingsById(String id) {
-        return bookingRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Listing not found with id " + id));
+    public BookingResponseDTO getBookingsById(String id) {
+        return convertToBookingResponseDTO(bookingRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Listing not found with id " + id)));
     }
-
-    public List<Booking> getAllBookings() {
-        return bookingRepository.findAll();
-    }
-
 
 //PATCH
-   public Booking updateBooking(String id, Booking booking){
+   public BookingResponseDTO updateBooking(String id, Booking booking){
+
        Booking existingBooking = bookingRepository.findById(id)
-               .orElseThrow(() -> new IllegalArgumentException("Booking not found with id " + id));
+               .orElseThrow(() -> new ResourceNotFoundException("Booking not found with id " + id));
 
-       //uppdatera endast icke null fält
-       if (booking.getListing() != null){
-           existingBooking.setListing(booking.getListing());
-       }
-       if (booking.getUser() != null){
-           existingBooking.setUser(booking.getUser());
-       }
-       if (booking.getReview() != null){
-           existingBooking.setReview(booking.getReview());
-       }
-       if (booking.getTotalAmount() != null){
-           existingBooking.setTotalAmount(booking.getTotalAmount());
-       }
-       if (booking.getStartDate() != null){
-           existingBooking.setStartDate(booking.getStartDate());
-       }
-       if (booking.getEndDate() != null){
-           existingBooking.setEndDate(booking.getEndDate());
+       User loggedInUser = userService.getLoggedInUser();
+
+       if (loggedInUser.getUsername().equals(existingBooking.getUser().getUsername())) {
+           //uppdatera endast icke null fält
+           if (booking.getListing() != null){
+               existingBooking.setListing(booking.getListing());
+           }
+           if (booking.getUser() != null){
+               existingBooking.setUser(booking.getUser());
+           }
+           if (booking.getReview() != null){
+               existingBooking.setReview(booking.getReview());
+           }
+           if (booking.getTotalAmount() != null){
+               existingBooking.setTotalAmount(booking.getTotalAmount());
+           }
+           if (booking.getStartDate() != null){
+               existingBooking.setStartDate(booking.getStartDate());
+           }
+           if (booking.getEndDate() != null){
+               existingBooking.setEndDate(booking.getEndDate());
+           }
+       } else {
+           throw new UnauthorizedException("You do not have permission to update this booking.");
        }
 
-       return bookingRepository.save(existingBooking);
+
+       Booking updatedBooking =  bookingRepository.save(existingBooking);
+
+       return convertToBookingResponseDTO(updatedBooking);
     }
 
     public void deleteBooking(String id) {
-        Booking booking = bookingRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Booking not found with id: " + id));
 
-        bookingRepository.delete(booking);
+        Booking booking = bookingRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Booking not found with id: " + id));
+
+        User loggedInUser = userService.getLoggedInUser();
+
+        if (loggedInUser.getUsername().equals(booking.getUser().getUsername())) {
+            bookingRepository.delete(booking);
+        } else {
+            throw new UnauthorizedException("You do not have permission to delete this booking.");
+        }
     }
 
     private void validateBooking(Booking booking){
@@ -130,5 +156,18 @@ public class BookingService {
             }
         }
     }
+    private BookingResponseDTO convertToBookingResponseDTO(Booking booking) {
+        BookingResponseDTO bookingResponseDTO = new BookingResponseDTO();
+        bookingResponseDTO.setId(booking.getId());
+        bookingResponseDTO.setListingId(booking.getListing().getId());
+        bookingResponseDTO.setListingName(booking.getListing().getName());
+        bookingResponseDTO.setUserId(booking.getUser().getId());
+        bookingResponseDTO.setUserName(booking.getUser().getFirstName());
+        bookingResponseDTO.setTotalAmount(booking.getTotalAmount());
+        bookingResponseDTO.setStartDate(booking.getStartDate());
+        bookingResponseDTO.setEndDate(booking.getEndDate());
+        bookingResponseDTO.setCreatedAt(booking.getCreatedAt());
 
+        return bookingResponseDTO;
+    }
 }

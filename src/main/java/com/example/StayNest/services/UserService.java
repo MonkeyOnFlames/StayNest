@@ -1,6 +1,7 @@
 package com.example.StayNest.services;
 
 import com.example.StayNest.exceptions.ResourceNotFoundException;
+import com.example.StayNest.exceptions.UnauthorizedException;
 import com.example.StayNest.models.Booking;
 import com.example.StayNest.models.Listing;
 import com.example.StayNest.models.Role;
@@ -9,6 +10,9 @@ import com.example.StayNest.repositories.BookingRepository;
 import com.example.StayNest.repositories.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -96,11 +100,11 @@ public class UserService {
         if (user.getEmail() != null) {
             existingUser.setEmail(user.getEmail());
         }
-        if (user.getFirst_name() != null) {
-            existingUser.setFirst_name(user.getFirst_name());
+        if (user.getFirstName() != null) {
+            existingUser.setFirstName(user.getFirstName());
         }
-        if (user.getLast_name() != null) {
-            existingUser.setLast_name(user.getLast_name());
+        if (user.getLastName() != null) {
+            existingUser.setLastName(user.getLastName());
         }
         if (user.getAdress() != null) {
             existingUser.setAdress(user.getAdress());
@@ -138,11 +142,11 @@ public class UserService {
 
     //not sure about the user.getAge. can't use trim
     private void validateUser(User user) {
-        if(user.getFirst_name() == null || user.getFirst_name().trim().isEmpty()) {
+        if(user.getFirstName() == null || user.getFirstName().trim().isEmpty()) {
             throw new IllegalArgumentException("First name can't be empty or null.");
         }
 
-        if(user.getLast_name() == null || user.getLast_name().trim().isEmpty()) {
+        if(user.getLastName() == null || user.getLastName().trim().isEmpty()) {
             throw new IllegalArgumentException("Last name can't be empty or null.");
         }
 
@@ -163,6 +167,15 @@ public class UserService {
         }*/
     }
 
+    public User getLoggedInUser(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated() || authentication instanceof org.springframework.security.authentication.AnonymousAuthenticationToken) {
+            throw new UnauthorizedException("User is not authenticated");
+        }
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        User user = userRepository.findByUsername(userDetails.getUsername())
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-
+        return user;
+    }
 }
