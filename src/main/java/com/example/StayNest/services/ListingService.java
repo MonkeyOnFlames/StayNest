@@ -39,7 +39,9 @@ public class ListingService {
         User user = userRepository.findByUsername(userDetails.getUsername())
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        user.setRoles(Set.of(Role.LANDLORD));
+        if (user.getRoles().equals(Set.of(Role.USER))) {
+            user.setRoles(Set.of(Role.LANDLORD));
+        }
         listing.setUser(user);
 
         validateListing(listing);
