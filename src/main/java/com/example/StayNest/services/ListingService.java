@@ -36,7 +36,9 @@ public class ListingService {
 
         if (loggedInUser.getRoles().equals(Set.of(Role.USER))) {
             loggedInUser.setRoles(Set.of(Role.LANDLORD));
+            userRepository.save(loggedInUser);
         }
+
         listing.setUser(loggedInUser);
 
         validateListing(listing);
