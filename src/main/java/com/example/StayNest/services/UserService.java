@@ -1,6 +1,7 @@
 package com.example.StayNest.services;
 
 import com.example.StayNest.exceptions.ResourceNotFoundException;
+import com.example.StayNest.exceptions.UnauthorizedException;
 import com.example.StayNest.models.Booking;
 import com.example.StayNest.models.Listing;
 import com.example.StayNest.models.Role;
@@ -125,7 +126,7 @@ public class UserService {
             return userRepository.save(existingUser);
 
         }else {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+            throw new UnauthorizedException("You do not have permission to update this user.");
         }
     }
 
