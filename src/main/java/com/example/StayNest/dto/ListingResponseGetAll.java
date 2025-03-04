@@ -1,6 +1,6 @@
 package com.example.StayNest.dto;
 
-import com.example.StayNest.models.Enviroment;
+import com.example.StayNest.models.Environment;
 import com.example.StayNest.models.Listing;
 import com.example.StayNest.models.ListingType;
 
@@ -14,7 +14,7 @@ public class ListingResponseGetAll {
     private String location;
     private Double price;
     private Set<ListingType> listingTypes;
-    private List<Enviroment> environment;
+    private List<Environment> environment;
     private List<String> pictureURLs;
     private List<Listing.Availability> availabilities;
 
@@ -69,11 +69,11 @@ public class ListingResponseGetAll {
         this.listingTypes = listingTypes;
     }
 
-    public List<Enviroment> getEnvironment() {
+    public List<Environment> getEnvironment() {
         return environment;
     }
 
-    public void setEnvironment(List<Enviroment> environment) {
+    public void setEnvironment(List<Environment> environment) {
         this.environment = environment;
     }
 

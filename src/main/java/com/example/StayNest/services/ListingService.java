@@ -4,6 +4,7 @@ import com.example.StayNest.dto.ListingResponseDTO;
 import com.example.StayNest.dto.ListingResponseGetAll;
 import com.example.StayNest.exceptions.ResourceNotFoundException;
 import com.example.StayNest.exceptions.UnauthorizedException;
+import com.example.StayNest.models.Environment;
 import com.example.StayNest.models.Listing;
 import com.example.StayNest.models.Role;
 import com.example.StayNest.models.User;
@@ -12,6 +13,7 @@ import com.example.StayNest.repositories.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -135,6 +137,51 @@ public class ListingService {
         }
         return listings;
     }
+
+    public List<ListingResponseGetAll> getListingsWithEnvironments(){
+        List<Listing> listings =  listingRepository.findAll();
+        List<ListingResponseGetAll> listingResponseGetAlls = new ArrayList<>();
+
+        for (Listing listing : listings) {
+            if (listing.getEnvironment() != null) {
+                if (!listing.getEnvironment().isEmpty()) {
+                    listingResponseGetAlls.add(convertToListingResponseGetAll(listing));
+                }
+            }
+        }
+
+        if (listingResponseGetAlls.isEmpty()) {
+            throw new ResourceNotFoundException("No listings found with any environment");
+        }
+
+        return listingResponseGetAlls;
+
+    }
+
+    public List<ListingResponseGetAll> getListingsWithSpecificEnvironment(Environment environment){
+        List<Listing> listings =  listingRepository.findAll();
+        List<ListingResponseGetAll> listingResponseGetAlls = new ArrayList<>();
+
+        for (Listing listing : listings) {
+            if (listing.getEnvironment() != null) {
+                if (!listing.getEnvironment().isEmpty()) {
+                    for (Environment listingEnvironment1 : listing.getEnvironment()) {
+                        if (listingEnvironment1.equals(environment)) {
+                            listingResponseGetAlls.add(convertToListingResponseGetAll(listing));
+                        }
+                    }
+                }
+            }
+        }
+
+        if (listingResponseGetAlls.isEmpty()) {
+            throw new ResourceNotFoundException("No listings found with chosen environment");
+        }
+
+        return listingResponseGetAlls;
+
+    }
+
 
     private void validateListing(Listing listing){
         if (listing.getName() == null || listing.getName().trim().isEmpty()){

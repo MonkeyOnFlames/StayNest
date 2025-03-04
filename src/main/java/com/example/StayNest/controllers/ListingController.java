@@ -2,6 +2,7 @@ package com.example.StayNest.controllers;
 
 import com.example.StayNest.dto.ListingResponseDTO;
 import com.example.StayNest.dto.ListingResponseGetAll;
+import com.example.StayNest.models.Environment;
 import com.example.StayNest.models.Listing;
 import com.example.StayNest.services.ListingService;
 import org.springframework.http.HttpStatus;
@@ -59,6 +60,15 @@ public class ListingController {
         return new ResponseEntity<>(listings, HttpStatus.OK);
     }
 
+    @GetMapping("/environments")
+    public ResponseEntity<List<ListingResponseGetAll>> getListingsByEnvironments() {
+        List<ListingResponseGetAll> listings = listingService.getListingsWithEnvironments();
+        return new ResponseEntity<>(listings, HttpStatus.OK);
+    }
 
-
+    @GetMapping("/{environment}/specific")
+    public ResponseEntity<List<ListingResponseGetAll>> getListingsBySpecificEnvironments(@PathVariable Environment environment) {
+        List<ListingResponseGetAll> listings = listingService.getListingsWithSpecificEnvironment(environment);
+        return new ResponseEntity<>(listings, HttpStatus.OK);
+    }
 }
