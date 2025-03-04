@@ -153,6 +153,7 @@ public class UserService {
             user.setRoles(Set.of(Role.ANONYMOUS));
 
             userRepository.save(user);
+
         } else {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
@@ -164,6 +165,7 @@ public class UserService {
         if (bookings.isEmpty()) {
             throw new ResourceNotFoundException("Bookings not found with user ID: " + id);
         }
+
         return bookings;
     }
 
@@ -173,9 +175,7 @@ public class UserService {
             if (listings.isEmpty()) {
                 throw new ResourceNotFoundException("Listings not found with user ID: " + id);
             }
-//        userRepository.findById(id)
-//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-//
+
             return listings;
         }
 
@@ -202,9 +202,6 @@ public class UserService {
             throw new IllegalArgumentException("The age can't be negative or null.");
         }
 
-        /*if(user.getPrice() < 0) {
-            throw new IllegalArgumentException("Product price can not be less than 0.");
-        }*/
     }
 
 
