@@ -86,65 +86,48 @@ public class UserService {
         User existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new /*ResponseStatusException(HttpStatus.NOT_FOUND,*/
                         ResourceNotFoundException("User not found"));
-//        validateUser(existingUser);
+
+        UserDetails currentUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
         // only updates none null fields
-        if (user.getUsername() != null) {
-            existingUser.setUsername(user.getUsername());
-        }
-        if (user.getPassword() != null) {
-            existingUser.setPassword(user.getPassword());
-        }
-        if (user.getRoles() != null) {
-            existingUser.setRoles(user.getRoles());
-        }
-        if (user.getEmail() != null) {
-            existingUser.setEmail(user.getEmail());
-        }
-        if (user.getFirstName() != null) {
-            existingUser.setFirstName(user.getFirstName());
-        }
-        if (user.getLastName() != null) {
-            existingUser.setLastName(user.getLastName());
-        }
-        if (user.getAdress() != null) {
-            existingUser.setAdress(user.getAdress());
-        }
-        if (user.getPhone() != null) {
-            existingUser.setPhone(user.getPhone());
-        }
-        if (user.getAge() != null) {
-            existingUser.setAge(user.getAge());
-        }
+        if (existingUser.getUsername().equals(currentUser.getUsername())) {
+//            if (user.getUsername() != null) {
+//                existingUser.setUsername(user.getUsername());
+//            }
+//            if (user.getPassword() != null) {
+//                existingUser.setPassword(user.getPassword());
+//            }
+//            if (user.getRoles() != null) {
+//                existingUser.setRoles(user.getRoles());
+//            }
+            if (user.getEmail() != null && !user.getEmail().equals(existingUser.getEmail())) {
+                if (userRepository.existsByEmail(user.getEmail())) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already in use");
+                }
+                existingUser.setEmail(user.getEmail());
+            }
+            if (user.getFirstName() != null) {
+                existingUser.setFirstName(user.getFirstName());
+            }
+            if (user.getLastName() != null) {
+                existingUser.setLastName(user.getLastName());
+            }
+            if (user.getAdress() != null) {
+                existingUser.setAdress(user.getAdress());
+            }
+            if (user.getPhone() != null) {
+                existingUser.setPhone(user.getPhone());
+            }
+            if (user.getAge() != null) {
+                existingUser.setAge(user.getAge());
+            }
 
-        return userRepository.save(existingUser);
+            return userRepository.save(existingUser);
+
+        }else {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
     }
-
-//    public void deleteUserByAdmin(String id) {
-//        User user = userRepository.findById(id)
-//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-//
-//        userRepository.delete(user);
-//    }
-//
-//    public void anonymizeUser(String id) {
-//        UserDetails currentUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//        User user = userRepository.findByUsername(currentUser.getUsername())
-//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-//
-//        user.setUsername(null);
-//        user.setEmail(null);
-//        user.setPassword(null);
-//        user.setFirstName(null);
-//        user.setLastName(null);
-//        user.setPhone(null);
-//        user.setAdress(null);
-//        user.setAge(null);
-//        user.setRoles(Set.of(Role.ANONYMOUS));
-//
-//        userRepository.save(user);
-//
-//
-//    }
 
     public void deleteUser(String id) {
         User user = userRepository.findById(id)
@@ -179,7 +162,7 @@ public class UserService {
         //went through listingRepository to get more info about the listing
         List<Booking> bookings = bookingRepository.findByUserId(id);
         if (bookings.isEmpty()) {
-            throw new ResourceNotFoundException("Listings not found with user ID: " + id);
+            throw new ResourceNotFoundException("Bookings not found with user ID: " + id);
         }
         return bookings;
     }
