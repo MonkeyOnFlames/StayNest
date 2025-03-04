@@ -10,6 +10,7 @@ import com.example.StayNest.repositories.BookingRepository;
 import com.example.StayNest.repositories.ListingRepository;
 import com.example.StayNest.repositories.UserRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -88,10 +89,11 @@ public class UserService {
                 .orElseThrow(() -> new /*ResponseStatusException(HttpStatus.NOT_FOUND,*/
                         ResourceNotFoundException("User not found"));
 
-        UserDetails currentUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User loggedInUser = getLoggedInUser();
+//        UserDetails currentUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         // only updates none null fields
-        if (existingUser.getUsername().equals(currentUser.getUsername())) {
+        if (loggedInUser.getUsername().equals(existingUser.getUsername())) {
 //            if (user.getUsername() != null) {
 //                existingUser.setUsername(user.getUsername());
 //            }
@@ -134,15 +136,16 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
-        UserDetails currentUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        boolean isAdmin = userRepository.existsByUsernameAndRolesContaining(currentUser.getUsername(), Role.ADMIN);
+        User loggedInUser = getLoggedInUser();
+//        UserDetails currentUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        boolean isAdmin = userRepository.existsByUsernameAndRolesContaining(loggedInUser.getUsername(), Role.ADMIN);
 
         //if admin delete a user account
         if (isAdmin) {
             userRepository.delete(user);
         }
         //if user delete their own account, make user ANONYMOUS
-        else if (user.getUsername().equals(currentUser.getUsername())) {
+        else if (user.getUsername().equals(loggedInUser.getUsername())) {
             user.setUsername(null);
             user.setEmail(null);
             user.setPassword(null);
@@ -156,7 +159,7 @@ public class UserService {
             userRepository.save(user);
 
         } else {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+            throw new UnauthorizedException("You do not have permission to delete this booking.");
         }
     }
 
@@ -205,6 +208,17 @@ public class UserService {
 
     }
 
+    public User getLoggedInUser(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated() || authentication instanceof org.springframework.security.authentication.AnonymousAuthenticationToken) {
+            throw new UnauthorizedException("User is not authenticated");
+        }
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        User user = userRepository.findByUsername(userDetails.getUsername())
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        return user;
+    }
 
 
 }
