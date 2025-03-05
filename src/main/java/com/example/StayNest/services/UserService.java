@@ -109,8 +109,8 @@ public class UserService {
 //                existingUser.setRoles(user.getRoles());
 //            }
             if (user.getEmail() != null && !user.getEmail().equals(existingUser.getEmail())) {
-                if (userRepository.existsByEmail(user.getEmail())) {
-                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already in use");
+                if (existsByEmail(user.getEmail())) {
+                    throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already in use");
                 }
                 existingUser.setEmail(user.getEmail());
             }
@@ -170,12 +170,24 @@ public class UserService {
 
     public List<Booking> getUserBookings(String id) {
         //went through listingRepository to get more info about the listing
-        List<Booking> bookings = bookingRepository.findByUserId(id);
-        if (bookings.isEmpty()) {
-            throw new ResourceNotFoundException("Bookings not found with user ID: " + id);
+        User existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        User loggedInUser = getLoggedInUser();
+
+        if (loggedInUser.getUsername().equals(existingUser.getUsername())) {
+
+            List<Booking> bookings = bookingRepository.findByUserId(id);
+            if (bookings.isEmpty()) {
+                throw new ResourceNotFoundException("Bookings not found with user ID: " + id);
+            }
+
+            return bookings;
+
+        }else {
+            throw new UnauthorizedException("You do not have permission to see this user bookings.");
         }
 
-        return bookings;
     }
 
         public List<Listing> getUserListings(String id) {

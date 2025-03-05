@@ -42,14 +42,13 @@ public class UserController {
     }
 
     @GetMapping("/{id}/listings")
-    @PreAuthorize("hasAnyRole('ADMIN', 'LANDLORD')")
     public ResponseEntity<List<Listing>> getUserListings(@PathVariable String id) {
         List<Listing> userListings = userService.getUserListings(id);
         return new ResponseEntity<>(userListings, HttpStatus.OK);
     }
 
     @GetMapping("/{id}/bookings")
-    @PreAuthorize("hasAnyRole('ADMIN', 'LANDLORD')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LANDLORD', 'USER')")
     public ResponseEntity<List<Booking>> getUserBookings(@PathVariable String id) {
         List<Booking> userBookings = userService.getUserBookings(id);
         return new ResponseEntity<>(userBookings, HttpStatus.OK);
