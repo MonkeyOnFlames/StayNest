@@ -126,18 +126,27 @@ public class ListingService {
         }
     }
 
-    public List<Listing> getListingsByPriceRange(double minPrice, double maxPrice) {
+    public List<ListingResponseGetAll> getListingsByPriceRange(double minPrice, double maxPrice) {
+        List<ListingResponseGetAll> listingResponseGetAlls = new ArrayList<>();
+
         if (minPrice < 0 || maxPrice < 0) {
             throw new IllegalArgumentException("Price values cannot be negative");
         }
         if (minPrice > maxPrice) {
             throw new IllegalArgumentException("MinPrice cannot be greater than maxPrice");
         }
+
         List<Listing> listings = listingRepository.findByPriceBetween(minPrice, maxPrice);
+
         if (listings.isEmpty()) {
             throw new ResourceNotFoundException("No listings found within price range: " + minPrice + " - " + maxPrice);
         }
-        return listings;
+
+        for (Listing listing : listings) {
+            listingResponseGetAlls.add(convertToListingResponseGetAll(listing));
+        }
+
+        return listingResponseGetAlls;
     }
 
     public List<ListingResponseGetAll> getListingsWithEnvironments(){

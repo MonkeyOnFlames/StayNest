@@ -55,8 +55,8 @@ public class ListingController {
 
 
     @GetMapping("/price")
-    public ResponseEntity<List<Listing>> getListingByPriceRange(@RequestParam double minPrice, @RequestParam double maxPrice) {
-        List<Listing> listings = listingService.getListingsByPriceRange(minPrice, maxPrice);
+    public ResponseEntity<List<ListingResponseGetAll>> getListingByPriceRange(@RequestParam double minPrice, @RequestParam double maxPrice) {
+        List<ListingResponseGetAll> listings = listingService.getListingsByPriceRange(minPrice, maxPrice);
         return new ResponseEntity<>(listings, HttpStatus.OK);
     }
 
