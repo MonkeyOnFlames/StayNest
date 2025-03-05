@@ -6,18 +6,11 @@ import com.example.StayNest.exceptions.UnauthorizedException;
 import com.example.StayNest.models.Booking;
 import com.example.StayNest.models.Listing;
 import com.example.StayNest.models.User;
-import com.example.StayNest.services.UserService;
 import com.example.StayNest.repositories.BookingRepository;
 import com.example.StayNest.repositories.ListingRepository;
 import com.example.StayNest.repositories.UserRepository;
 import jakarta.validation.Valid;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class BookingService {
@@ -49,8 +42,19 @@ public class BookingService {
     }
 
     public BookingResponseDTO getBookingsById(String id) {
-        return convertToBookingResponseDTO(bookingRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Listing not found with id " + id)));
+        Booking existingBooking = bookingRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Booking not found with id " + id));
+
+        User loggedInUser = userService.getLoggedInUser();
+
+        if (loggedInUser.getUsername().equals(existingBooking.getUser().getUsername())
+        || loggedInUser.getUsername().equals(existingBooking.getListing().getUser().getUsername())) {
+            return convertToBookingResponseDTO(existingBooking);
+        }
+        else {
+            throw new UnauthorizedException("You are not authorized to view this booking");
+        }
+
     }
 
 //PATCH
