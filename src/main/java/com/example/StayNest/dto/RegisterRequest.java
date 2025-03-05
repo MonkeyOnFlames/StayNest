@@ -12,10 +12,29 @@ public class RegisterRequest {
     private String password;
     private Set<Role> roles;
 
-    public RegisterRequest(String username, String password, Set<Role> roles) {
+    @NotBlank
+    private String email;
+    @NotBlank
+    private String firstName;
+    @NotBlank
+    private String lastName;
+    @NotBlank
+    private String adress;
+    @NotBlank
+    private String phone;
+    //@NotBlank
+    private Integer age;
+
+    public RegisterRequest(String username, String password, Set<Role> roles, String email, String firstName, String lastName, String adress, String phone, Integer age) {
         this.username = username;
         this.password = password;
         this.roles = roles;
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.adress = adress;
+        this.phone = phone;
+        this.age = age;
     }
 
     public @NotBlank String getUsername() {
@@ -28,5 +47,29 @@ public class RegisterRequest {
 
     public Set<Role> getRoles() {
         return roles;
+    }
+
+    public @NotBlank String getEmail() {
+        return email;
+    }
+
+    public @NotBlank String getFirstName() {
+        return firstName;
+    }
+
+    public @NotBlank String getLastName() {
+        return lastName;
+    }
+
+    public @NotBlank String getAdress() {
+        return adress;
+    }
+
+    public @NotBlank String getPhone() {
+        return phone;
+    }
+
+    public Integer getAge() {
+        return age;
     }
 }
