@@ -1,11 +1,13 @@
 package com.example.StayNest.controllers;
 
 
+import com.example.StayNest.dto.BookingResponseDTO;
 import com.example.StayNest.models.Booking;
 import com.example.StayNest.repositories.BookingRepository;
 import com.example.StayNest.services.BookingService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,32 +26,30 @@ public class BookingController {
     }
 
     @PostMapping
-    public ResponseEntity<Booking> createBooking(@RequestBody Booking booking){
-        Booking createdBooking = bookingService.createBooking(booking);
+    @PreAuthorize("hasAnyRole('USER', 'LANDLORD', 'ADMIN')")
+    public ResponseEntity<BookingResponseDTO> createBooking(@RequestBody Booking booking){
+        BookingResponseDTO createdBooking = bookingService.createBooking(booking);
         return new ResponseEntity<>(createdBooking, HttpStatus.CREATED);
-    }
-
-    @GetMapping
-    public ResponseEntity<List<Booking>> getAllBookings(){
-        List<Booking> bookings = bookingService.getAllBookings();
-        return new ResponseEntity<>(bookings, HttpStatus.OK);
     }
 
 //Hitta en bokning genom id
     @GetMapping("/{id}")
-    public ResponseEntity<Booking> getBookingById (@PathVariable String id){
-        Booking booking = bookingService.getBookingsById(id);
+    @PreAuthorize("hasAnyRole('USER', 'LANDLORD', 'ADMIN')")
+    public ResponseEntity<BookingResponseDTO> getBookingById (@PathVariable String id){
+        BookingResponseDTO booking = bookingService.getBookingsById(id);
         return new ResponseEntity<>(booking, HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Booking> updateBooking(@PathVariable String id, @RequestBody Booking booking) {
+    @PreAuthorize("hasAnyRole('USER', 'LANDLORD', 'ADMIN')")
+    public ResponseEntity<BookingResponseDTO> updateBooking(@PathVariable String id, @RequestBody Booking booking) {
         return ResponseEntity.ok(bookingService.updateBooking(id, booking));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('USER', 'LANDLORD', 'ADMIN')")
     public ResponseEntity<Booking> deleteBooking(@PathVariable String id) {
-        bookingRepository.deleteById(id);
+        bookingService.deleteBooking(id);
         return ResponseEntity.noContent().build();
     }
 
