@@ -4,10 +4,13 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Date;
 import java.util.Set;
 
 @Document(collection = "users")
@@ -35,11 +38,11 @@ public class User {
 
     @NotNull(message = "First name can't be null")
     @NotEmpty(message = "First name can't be empty")
-    private String first_name;
+    private String firstName;
 
     @NotNull(message = "Last name can't be null")
     @NotEmpty(message = "Last name can't be empty")
-    private String last_name;
+    private String lastName;
 
     //not sure if @NotEmpty works with Integer
 //    @NotEmpty(message = "This can't be empty")
@@ -55,17 +58,23 @@ public class User {
     @NotEmpty(message = "The phone number can't be empty")
     private String phone;
 
+    @CreatedDate
+    private Date createdAt;
+
+    @LastModifiedDate
+    private Date updatedAt;
+
     public User() {
     }
 
-    public User(String id, String username, String email, String password, Set<Role> roles, String first_name, String last_name, String adress, String phone, int age) {
+    public User(String id, String username, String email, String password, Set<Role> roles, String firstName, String lastName, String adress, String phone, int age) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.password = password;
         this.roles = roles;
-        this.first_name = first_name;
-        this.last_name = last_name;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.adress = adress;
         this.phone = phone;
         this.age = age;
@@ -118,20 +127,20 @@ public class User {
     }
 
 
-    public @NotNull(message = "First name can't be null") @NotEmpty(message = "First name can't be empty") String getFirst_name() {
-        return first_name;
+    public @NotNull(message = "First name can't be null") @NotEmpty(message = "First name can't be empty") String getFirstName() {
+        return firstName;
     }
 
-    public void setFirst_name(@NotNull(message = "First name can't be null") @NotEmpty(message = "First name can't be empty") String first_name) {
-        this.first_name = first_name;
+    public void setFirstName(@NotNull(message = "First name can't be null") @NotEmpty(message = "First name can't be empty") String firstName) {
+        this.firstName = firstName;
     }
 
-    public @NotNull(message = "Last name can't be null") @NotEmpty(message = "Last name can't be empty") String getLast_name() {
-        return last_name;
+    public @NotNull(message = "Last name can't be null") @NotEmpty(message = "Last name can't be empty") String getLastName() {
+        return lastName;
     }
 
-    public void setLast_name(@NotNull(message = "Last name can't be null") @NotEmpty(message = "Last name can't be empty") String last_name) {
-        this.last_name = last_name;
+    public void setLastName(@NotNull(message = "Last name can't be null") @NotEmpty(message = "Last name can't be empty") String lastName) {
+        this.lastName = lastName;
     }
 
 //    public @NotNull(message = "Can't be null") /*@NotEmpty(message = "This can't be empty")*/ Integer getAge() {
@@ -165,4 +174,21 @@ public class User {
     public void setAge(@NotNull(message = "Can't be null") @Positive(message = "The age must be greater than 0") Integer age) {
         this.age = age;
     }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
 }

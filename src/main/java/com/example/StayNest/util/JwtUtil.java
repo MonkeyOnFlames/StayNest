@@ -17,7 +17,7 @@ import java.util.Date;
 public class JwtUtil {
     //secret key to generate tokens
     @Value("${jwt.secret}")
-    private String jwtsecret;
+    private String jwtSecret;
 
     //how long token is valid (milli sek)
     @Value("${jwt.expirationMs}")
@@ -25,7 +25,7 @@ public class JwtUtil {
 
     //create encrypted key based on our secret values
     private Key getSigninKey(){
-        byte[] keyBytes = jwtsecret.getBytes(StandardCharsets.UTF_8);
+        byte[] keyBytes = jwtSecret.getBytes(StandardCharsets.UTF_8);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
@@ -65,7 +65,7 @@ public class JwtUtil {
         return Jwts.parserBuilder()
                 .setSigningKey(getSigninKey())
                 .build()
-                .parseClaimsJwt(token)
+                .parseClaimsJws(token)
                 .getBody();
     }
 }
