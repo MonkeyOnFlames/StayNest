@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface ListingRepository extends MongoRepository<Listing, String> {
     List<Listing> findByPriceBetween(double minPrice, double maxPrice);
-    Listing findListingById(String id);
+    List<Listing> findByUserId(String id);
 }
