@@ -45,7 +45,7 @@ public class Listing {
     @NotNull(message = "Listing policy cannot be null")
     private String listingPolicy;
 
-    private List<Enviroment> environment;
+    private List<Environment> environment;
 
     private List<Restrictions> restrictions;
 
@@ -132,11 +132,11 @@ public class Listing {
         this.listingPolicy = listingPolicy;
     }
 
-    public List<Enviroment> getEnvironment() {
+    public List<Environment> getEnvironment() {
         return environment;
     }
 
-    public void setEnvironment(List<Enviroment> environments) {
+    public void setEnvironment(List<Environment> environments) {
         this.environment = environments;
     }
 
@@ -162,6 +162,10 @@ public class Listing {
 
     public void setAvailabilities(@NotEmpty(message = "Availability cannot be empty") @NotNull(message = "Availability cannot be null") List<Availability> availabilities) {
         this.availabilities = availabilities;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
     }
 
     public static class Availability {
