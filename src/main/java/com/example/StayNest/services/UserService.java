@@ -54,6 +54,11 @@ public class UserService {
         return userRepository.findByUsername(username).isPresent();
     }
 
+    //check if username already exists
+    public boolean existsByEmail(String email) {
+        return userRepository.findByEmail(email).isPresent();
+    }
+
 
     //this needs to be changed when we implement register and log in
 //    public User createUser(@Valid User user) {
