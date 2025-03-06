@@ -8,6 +8,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -169,25 +170,25 @@ public class Listing {
     }
 
     public static class Availability {
-        private Date startDate;
-        private Date endDate;
+        private LocalDate startDate;
+        private LocalDate endDate;
 
         public Availability() {
         }
 
-        public Date getStartDate() {
+        public LocalDate getStartDate() {
             return startDate;
         }
 
-        public void setStartDate(Date startDate) {
+        public void setStartDate(LocalDate startDate) {
             this.startDate = startDate;
         }
 
-        public Date getEndDate() {
+        public LocalDate getEndDate() {
             return endDate;
         }
 
-        public void setEndDate(Date endDate) {
+        public void setEndDate(LocalDate endDate) {
             this.endDate = endDate;
         }
     }
