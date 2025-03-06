@@ -1,6 +1,7 @@
 package com.example.StayNest.controllers;
 
 
+import com.example.StayNest.dto.BookingRequestDTO;
 import com.example.StayNest.dto.BookingResponseDTO;
 import com.example.StayNest.models.Booking;
 import com.example.StayNest.repositories.BookingRepository;
@@ -10,20 +11,24 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/bookings")
 public class BookingController {
     private final BookingService bookingService;
     private final BookingRepository bookingRepository;
 
-
-
     public BookingController(BookingService bookingService, BookingRepository bookingRepository) {
         this.bookingService = bookingService;
         this.bookingRepository = bookingRepository;
     }
+
+    @PostMapping("/new")
+    @PreAuthorize("hasAnyRole('USER', 'LANDLORD', 'ADMIN')")
+    public ResponseEntity<BookingResponseDTO> createNewBooking(@RequestBody BookingRequestDTO booking){
+        BookingResponseDTO createdBooking = bookingService.createNewBooking(booking);
+        return new ResponseEntity<>(createdBooking, HttpStatus.CREATED);
+    }
+
 
     @PostMapping
     @PreAuthorize("hasAnyRole('USER', 'LANDLORD', 'ADMIN')")
