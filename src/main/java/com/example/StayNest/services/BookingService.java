@@ -9,7 +9,6 @@ import com.example.StayNest.models.Listing;
 import com.example.StayNest.models.User;
 import com.example.StayNest.repositories.BookingRepository;
 import com.example.StayNest.repositories.ListingRepository;
-import com.example.StayNest.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -20,13 +19,11 @@ import java.util.List;
 public class BookingService {
 
     private final BookingRepository bookingRepository;
-    private final UserRepository userRepository;
     private final ListingRepository listingRepository;
     private final UserService userService;
 
-    public BookingService(BookingRepository bookingRepository, UserRepository userRepository, ListingRepository listingRepository, UserService userService) {
+    public BookingService(BookingRepository bookingRepository, ListingRepository listingRepository, UserService userService) {
         this.bookingRepository = bookingRepository;
-        this.userRepository = userRepository;
         this.listingRepository = listingRepository;
         this.userService = userService;
     }
