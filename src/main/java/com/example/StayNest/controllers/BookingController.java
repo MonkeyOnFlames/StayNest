@@ -22,17 +22,9 @@ public class BookingController {
         this.bookingRepository = bookingRepository;
     }
 
-    @PostMapping("/new")
+    @PostMapping()
     @PreAuthorize("hasAnyRole('USER', 'LANDLORD', 'ADMIN')")
-    public ResponseEntity<BookingResponseDTO> createNewBooking(@RequestBody BookingRequestDTO booking){
-        BookingResponseDTO createdBooking = bookingService.createNewBooking(booking);
-        return new ResponseEntity<>(createdBooking, HttpStatus.CREATED);
-    }
-
-
-    @PostMapping
-    @PreAuthorize("hasAnyRole('USER', 'LANDLORD', 'ADMIN')")
-    public ResponseEntity<BookingResponseDTO> createBooking(@RequestBody Booking booking){
+    public ResponseEntity<BookingResponseDTO> createBooking(@RequestBody BookingRequestDTO booking){
         BookingResponseDTO createdBooking = bookingService.createBooking(booking);
         return new ResponseEntity<>(createdBooking, HttpStatus.CREATED);
     }

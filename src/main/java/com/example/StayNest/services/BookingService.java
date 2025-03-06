@@ -10,7 +10,6 @@ import com.example.StayNest.models.User;
 import com.example.StayNest.repositories.BookingRepository;
 import com.example.StayNest.repositories.ListingRepository;
 import com.example.StayNest.repositories.UserRepository;
-import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -33,7 +32,7 @@ public class BookingService {
     }
 
     // Helenas createBooking
-    public BookingResponseDTO createNewBooking(BookingRequestDTO bookingRequestDTO) {
+    public BookingResponseDTO createBooking(BookingRequestDTO bookingRequestDTO) {
         Booking booking = new Booking();
 
         User loggedInUser = userService.getLoggedInUser();
@@ -154,24 +153,6 @@ public class BookingService {
         listingRepository.save(listing);
     }
 
-
-    // @valid fungerar inte här den ska va i controller..
-    public BookingResponseDTO createBooking(@Valid Booking booking) {
-
-        User loggedInUser = userService.getLoggedInUser();
-
-        booking.setUser(loggedInUser);
-
-        validateBooking(booking);
-
-     //   changeListingAvailability(booking, );
-
-        Booking savedBooking = bookingRepository.save(booking);
-
-
-        return convertToBookingResponseDTO(savedBooking);
-    }
-
     public BookingResponseDTO getBookingsById(String id) {
         Booking existingBooking = bookingRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Booking not found with id " + id));
@@ -272,24 +253,4 @@ public class BookingService {
 
         return bookingResponseDTO;
     }
-
-    private void changeListingAvailability (Booking booking, Listing.Availability availability){
-
-        Listing.Availability newAvailability = new Listing.Availability();
-        Listing listing = listingRepository.findListingById(booking.getListing().getId());
-
-        newAvailability.setStartDate(booking.getEndDate().plusDays(1)); // +1 dag
-        newAvailability.setEndDate(availability.getEndDate());
-        availability.setEndDate(booking.getStartDate().minusDays(1)); //-1 dag
-
-        if (availability.getStartDate().isAfter(availability.getEndDate())){
-            listing.getAvailabilities().remove(availability);
-        }
-        if (!newAvailability.getStartDate().isAfter(newAvailability.getEndDate())) {
-            listing.getAvailabilities().add(newAvailability);
-        }
-
-        listingRepository.save(listing);
-    }
-
 }

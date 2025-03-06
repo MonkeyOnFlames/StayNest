@@ -10,7 +10,6 @@ import com.example.StayNest.models.Role;
 import com.example.StayNest.models.User;
 import com.example.StayNest.repositories.ListingRepository;
 import com.example.StayNest.repositories.UserRepository;
-import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -30,7 +29,7 @@ public class ListingService {
         this.userService = userService;
     }
 
-    public ListingResponseDTO createListing(@Valid Listing listing) {
+    public ListingResponseDTO createListing(Listing listing) {
 
         User loggedInUser = userService.getLoggedInUser();
 
