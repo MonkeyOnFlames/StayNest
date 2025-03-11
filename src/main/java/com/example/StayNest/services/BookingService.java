@@ -236,7 +236,7 @@ public class BookingService {
         }
 
     }
-    public BookingResponseDTO convertToBookingResponseDTO(Booking booking) {
+    private BookingResponseDTO convertToBookingResponseDTO(Booking booking) {
         BookingResponseDTO bookingResponseDTO = new BookingResponseDTO();
         bookingResponseDTO.setId(booking.getId());
         bookingResponseDTO.setListingId(booking.getListing().getId());

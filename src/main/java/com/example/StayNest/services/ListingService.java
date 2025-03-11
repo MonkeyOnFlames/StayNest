@@ -241,7 +241,7 @@ public class ListingService {
         return listingResponseDTO;
     }
 
-    public ListingResponseGetAll convertToListingResponseGetAll(Listing listing){
+    private ListingResponseGetAll convertToListingResponseGetAll(Listing listing){
         ListingResponseGetAll listingResponseGetAll = new ListingResponseGetAll();
         listingResponseGetAll.setId(listing.getId());
         listingResponseGetAll.setFirstName(listing.getUser().getFirstName());

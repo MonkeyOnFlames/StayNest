@@ -174,7 +174,18 @@ public class UserService {
                 throw new ResourceNotFoundException("Bookings not found with user ID: " + id);
             }
         for (Booking booking : bookings) {
-            bookingResponseDTOs.add(bookingService.convertToBookingResponseDTO(booking));
+            BookingResponseDTO bookingResponseDTO = new BookingResponseDTO();
+            bookingResponseDTO.setId(booking.getId());
+            bookingResponseDTO.setListingId(booking.getListing().getId());
+            bookingResponseDTO.setListingName(booking.getListing().getName());
+            bookingResponseDTO.setUserId(booking.getUser().getId());
+            bookingResponseDTO.setUserName(booking.getUser().getFirstName());
+            bookingResponseDTO.setTotalAmount(booking.getTotalAmount());
+            bookingResponseDTO.setStartDate(booking.getStartDate());
+            bookingResponseDTO.setEndDate(booking.getEndDate());
+            bookingResponseDTO.setCreatedAt(booking.getCreatedAt());
+
+            bookingResponseDTOs.add(bookingResponseDTO);
 
         }
 
@@ -194,8 +205,18 @@ public class UserService {
                 throw new ResourceNotFoundException("Listings not found with user ID: " + id);
             }
             for (Listing listing : listings) {
-                listingResponseGetAlls.add(listingService.convertToListingResponseGetAll(listing));
+                ListingResponseGetAll listingResponseGetAll = new ListingResponseGetAll();
+                listingResponseGetAll.setId(listing.getId());
+                listingResponseGetAll.setFirstName(listing.getUser().getFirstName());
+                listingResponseGetAll.setName(listing.getName());
+                listingResponseGetAll.setLocation(listing.getLocation());
+                listingResponseGetAll.setPrice(listing.getPrice());
+                listingResponseGetAll.setListingTypes(listing.getListingTypes());
+                listingResponseGetAll.setEnvironment(listing.getEnvironment());
+                listingResponseGetAll.setPictureURLs(listing.getPictureURLs());
+                listingResponseGetAll.setAvailabilities(listing.getAvailabilities());
 
+                listingResponseGetAlls.add(listingResponseGetAll);
             }
 
             return listingResponseGetAlls;
