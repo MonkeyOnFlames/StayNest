@@ -31,16 +31,13 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final BookingRepository bookingRepository;
     private final ListingRepository listingRepository;
-    private final BookingService bookingService;
-    private final ListingService listingService;
 
-    public UserService(UserRepository userRepository, BookingRepository bookingRepository, ListingRepository listingRepository, PasswordEncoder passwordEncoder, BookingService bookingService, ListingService listingService) {
+    public UserService(UserRepository userRepository, BookingRepository bookingRepository, ListingRepository listingRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.bookingRepository = bookingRepository;
         this.listingRepository = listingRepository;
-        this.bookingService = bookingService;
-        this.listingService = listingService;
+
     }
 
     public void registerUser(User user) {
