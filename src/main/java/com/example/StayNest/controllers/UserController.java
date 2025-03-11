@@ -1,7 +1,7 @@
 package com.example.StayNest.controllers;
 
 import com.example.StayNest.dto.BookingResponseDTO;
-import com.example.StayNest.models.Listing;
+import com.example.StayNest.dto.ListingResponseGetAll;
 import com.example.StayNest.models.User;
 import com.example.StayNest.services.UserService;
 import org.springframework.http.HttpStatus;
@@ -42,8 +42,8 @@ public class UserController {
     }
 
     @GetMapping("/{id}/listings")
-    public ResponseEntity<List<Listing>> getUserListings(@PathVariable String id) {
-        List<Listing> userListings = userService.getUserListings(id);
+    public ResponseEntity<List<ListingResponseGetAll>> getUserListings(@PathVariable String id) {
+        List<ListingResponseGetAll> userListings = userService.getUserListings(id);
         return new ResponseEntity<>(userListings, HttpStatus.OK);
     }
 

@@ -1,6 +1,7 @@
 package com.example.StayNest.services;
 
 import com.example.StayNest.dto.BookingResponseDTO;
+import com.example.StayNest.dto.ListingResponseGetAll;
 import com.example.StayNest.exceptions.ResourceNotFoundException;
 import com.example.StayNest.exceptions.UnauthorizedException;
 import com.example.StayNest.models.Booking;
@@ -31,13 +32,15 @@ public class UserService {
     private final BookingRepository bookingRepository;
     private final ListingRepository listingRepository;
     private final BookingService bookingService;
+    private final ListingService listingService;
 
-    public UserService(UserRepository userRepository, BookingRepository bookingRepository, ListingRepository listingRepository, PasswordEncoder passwordEncoder, BookingService bookingService) {
+    public UserService(UserRepository userRepository, BookingRepository bookingRepository, ListingRepository listingRepository, PasswordEncoder passwordEncoder, BookingService bookingService, ListingService listingService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.bookingRepository = bookingRepository;
         this.listingRepository = listingRepository;
         this.bookingService = bookingService;
+        this.listingService = listingService;
     }
 
     public void registerUser(User user) {
@@ -183,14 +186,19 @@ public class UserService {
 
     }
 
-        public List<Listing> getUserListings(String id) {
+        public List<ListingResponseGetAll> getUserListings(String id) {
             //went through listingRepository to get more info about the listing
             List<Listing> listings = listingRepository.findByUserId(id);
+            List<ListingResponseGetAll> listingResponseGetAlls = new ArrayList<>();
             if (listings.isEmpty()) {
                 throw new ResourceNotFoundException("Listings not found with user ID: " + id);
             }
+            for (Listing listing : listings) {
+                listingResponseGetAlls.add(listingService.convertToListingResponseGetAll(listing));
 
-            return listings;
+            }
+
+            return listingResponseGetAlls;
         }
 
 
