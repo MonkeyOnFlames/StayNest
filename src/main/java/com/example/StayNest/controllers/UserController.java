@@ -61,20 +61,6 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-//    @DeleteMapping("/admin/{id}")
-//    @PreAuthorize("hasRole('ADMIN')")
-//    public ResponseEntity<Void> deleteUserByAdmin(@PathVariable String id) {
-//        userService.deleteUserByAdmin(id);
-//        return ResponseEntity.noContent().build();
-//    }
-//
-//    //can't have the same endpoint...
-//    @DeleteMapping("/{id}")
-//    @PreAuthorize("hasRole('USER')")
-//    public ResponseEntity<Void> deleteUser(@PathVariable String id) {
-//        userService.anonymizeUser(id);
-//        return ResponseEntity.noContent().build();
-//    }
 
 
 

@@ -143,14 +143,6 @@ public class User {
         this.lastName = lastName;
     }
 
-//    public @NotNull(message = "Can't be null") /*@NotEmpty(message = "This can't be empty")*/ Integer getAge() {
-//        return age;
-//    }
-//
-//    public void setAge(@NotNull(message = "Can't be null") /*@NotEmpty(message = "This can't be empty")*/ Integer age) {
-//        this.age = age;
-//    }
-
     public @NotNull(message = "Adress can't be null") @NotEmpty(message = "Adress can't be empty") String getAdress() {
         return adress;
     }

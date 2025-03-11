@@ -59,18 +59,6 @@ public class UserService {
         return userRepository.findByEmail(email).isPresent();
     }
 
-
-    //this needs to be changed when we implement register and log in
-//    public User createUser(@Valid User user) {
-//        if (user.getRoles() == null || user.getRoles().isEmpty()) {
-//             user.setRoles(Set.of(Role.USER));
-//        }
-//
-//        validateUser(user);
-//
-//        return userRepository.save(user);
-//    }
-
     //find user by username
     public User findByUsername(String username) {
         return userRepository.findByUsername(username)
@@ -91,11 +79,9 @@ public class UserService {
     //when we implement register/login we need to delete some fields
     public User updateUser(String id, User user) {
         User existingUser = userRepository.findById(id)
-                .orElseThrow(() -> new /*ResponseStatusException(HttpStatus.NOT_FOUND,*/
-                        ResourceNotFoundException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         User loggedInUser = getLoggedInUser();
-//        UserDetails currentUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         // only updates none null fields
         if (loggedInUser.getUsername().equals(existingUser.getUsername())) {
@@ -142,7 +128,6 @@ public class UserService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
         User loggedInUser = getLoggedInUser();
-//        UserDetails currentUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         boolean isAdmin = userRepository.existsByUsernameAndRolesContaining(loggedInUser.getUsername(), Role.ADMIN);
 
         //if admin delete a user account
