@@ -33,7 +33,6 @@ public class Listing {
     @NotNull(message = "Description cannot be null")
     private String description;
 
-    @NotEmpty(message = "Price cannot be empty")
     @NotNull(message = "Price cannot be null")
     @Positive(message = "Price must be greater than 0")
     private Double price;
@@ -106,14 +105,13 @@ public class Listing {
         this.description = description;
     }
 
-    @NotEmpty(message = "Price cannot be empty")
     @NotNull(message = "Price cannot be null")
     @Positive(message = "Price must be greater than 0")
     public Double getPrice() {
         return price;
     }
 
-    public void setPrice(@NotEmpty(message = "Price cannot be empty") @NotNull(message = "Price cannot be null") @Positive(message = "Price must be greater than 0") Double price) {
+    public void setPrice(@NotNull(message = "Price cannot be null") @Positive(message = "Price must be greater than 0") Double price) {
         this.price = price;
     }
 

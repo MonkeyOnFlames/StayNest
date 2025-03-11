@@ -1,6 +1,6 @@
 package com.example.StayNest.controllers;
 
-import com.example.StayNest.models.Booking;
+import com.example.StayNest.dto.BookingResponseDTO;
 import com.example.StayNest.models.Listing;
 import com.example.StayNest.models.User;
 import com.example.StayNest.services.UserService;
@@ -49,8 +49,8 @@ public class UserController {
 
     @GetMapping("/{id}/bookings")
     @PreAuthorize("hasAnyRole('ADMIN', 'LANDLORD', 'USER')")
-    public ResponseEntity<List<Booking>> getUserBookings(@PathVariable String id) {
-        List<Booking> userBookings = userService.getUserBookings(id);
+    public ResponseEntity<List<BookingResponseDTO>> getUserBookings(@PathVariable String id) {
+        List<BookingResponseDTO> userBookings = userService.getUserBookings(id);
         return new ResponseEntity<>(userBookings, HttpStatus.OK);
     }
 

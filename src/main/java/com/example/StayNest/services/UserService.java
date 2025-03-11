@@ -1,5 +1,6 @@
 package com.example.StayNest.services;
 
+import com.example.StayNest.dto.BookingResponseDTO;
 import com.example.StayNest.exceptions.ResourceNotFoundException;
 import com.example.StayNest.exceptions.UnauthorizedException;
 import com.example.StayNest.models.Booking;
@@ -18,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -28,12 +30,14 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final BookingRepository bookingRepository;
     private final ListingRepository listingRepository;
+    private final BookingService bookingService;
 
-    public UserService(UserRepository userRepository, BookingRepository bookingRepository, ListingRepository listingRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, BookingRepository bookingRepository, ListingRepository listingRepository, PasswordEncoder passwordEncoder, BookingService bookingService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.bookingRepository = bookingRepository;
         this.listingRepository = listingRepository;
+        this.bookingService = bookingService;
     }
 
     public void registerUser(User user) {
@@ -153,21 +157,25 @@ public class UserService {
         }
     }
 
-    public List<Booking> getUserBookings(String id) {
+    public List<BookingResponseDTO> getUserBookings(String id) {
         //went through listingRepository to get more info about the listing
         User existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         User loggedInUser = getLoggedInUser();
+        List<BookingResponseDTO> bookingResponseDTOs = new ArrayList<>();
 
         if (loggedInUser.getUsername().equals(existingUser.getUsername())) {
-
             List<Booking> bookings = bookingRepository.findByUserId(id);
             if (bookings.isEmpty()) {
                 throw new ResourceNotFoundException("Bookings not found with user ID: " + id);
             }
+        for (Booking booking : bookings) {
+            bookingResponseDTOs.add(bookingService.convertToBookingResponseDTO(booking));
 
-            return bookings;
+        }
+
+            return bookingResponseDTOs;
 
         }else {
             throw new UnauthorizedException("You do not have permission to see this user bookings.");
