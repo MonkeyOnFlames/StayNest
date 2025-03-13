@@ -1,14 +1,15 @@
-## StayNest
+# StayNest
 Group assignment Backend
 
 
-# Säkerhetsanalysmall för Spring Boot-projekt
+# Säkerhetsanalys för Spring Boot-projekt
 
 ## 1. Projektöversikt
 
 - Beskriv kort vad er applikation gör
 
 Det är en hemsida där man kan hyra ett boende eller en tomt. Det finns funktioner för att visa hur miljövänligt det är.
+
 
  Lista huvudfunktionaliteterna
 
@@ -17,7 +18,7 @@ Man ska kunna:
 - se en listing
 - visa hur miljövänlig ens listing är
 - hyra en listing
-- skapa ett konto med email och lösenord
+- skapa ett konto med ett användarnamn och lösenord
 - logga in
 
  Identifiera vilka användare/roller som finns i systemet
@@ -42,7 +43,7 @@ Kryssa i det som stämmer för er, fyll på med fler om det behövs.
 Beskriv hur du skyddar den känsliga informationen:
 
 ```java
-@Bean
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 //CORS config
@@ -55,6 +56,9 @@ Beskriv hur du skyddar den känsliga informationen:
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/landlord/**").hasAnyRole("LANDLORD", "ADMIN")
                         .requestMatchers("/user/**").hasAnyRole("USER", "LANDLORD", "ADMIN")
+                        .requestMatchers("/api/users/**").permitAll()
+                        .requestMatchers("/api/bookings/**").permitAll()
+                        .requestMatchers("/api/listings/**").permitAll()
                         .requestMatchers("/auth/**").permitAll()
                         //any other requests the user need to be logged
                         .anyRequest().authenticated()
@@ -67,6 +71,8 @@ Beskriv hur du skyddar den känsliga informationen:
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
+
+//vi använder method security för users, bookings och listings
 ```
 
 - Kryptering (vilken data krypteras och hur?)
@@ -103,7 +109,7 @@ Kryssa i det som finns med/det ni har hanterat eller ska hantera i er applikatio
 Kryssa i det som finns med/det ni har hanterar eller ska hantera i er applikation. Kryssa i även om vissa är disabled men skriv inom parentes disabled
 
 - [x] Validering av alla användarinput
-- [x] Skydd mot SQL Injection
+- [ ] Skydd mot SQL Injection
 - [x] Skydd mot XSS 
 - [x] Skydd mot CSRF (disabled)
 
@@ -135,6 +141,9 @@ Lista konkreta säkerhetsimplementeringar:
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/landlord/**").hasAnyRole("LANDLORD", "ADMIN")
                         .requestMatchers("/user/**").hasAnyRole("USER", "LANDLORD", "ADMIN")
+                        .requestMatchers("/api/users/**").permitAll()
+                        .requestMatchers("/api/bookings/**").permitAll()
+                        .requestMatchers("/api/listings/**").permitAll()
                         .requestMatchers("/auth/**").permitAll()
                         //any other requests the user need to be logged
                         .anyRequest().authenticated()
@@ -148,6 +157,7 @@ Lista konkreta säkerhetsimplementeringar:
         return http.build();
     }
 ```
+- @PreAuthorize
 
 ```java
     @Bean
@@ -155,14 +165,39 @@ Lista konkreta säkerhetsimplementeringar:
         return new BCryptPasswordEncoder(12);
     }
 ```
+```
+    public User getLoggedInUser(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated() || authentication instanceof org.springframework.security.authentication.AnonymousAuthenticationToken) {
+            throw new UnauthorizedException("User is not authenticated");
+        }
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        User user = userRepository.findByUsername(userDetails.getUsername())
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        return user;
+    }
+```
 
 
 ## 6. Kvarstående Risker
 
-OBS! Kan fyllas i mot slutet av projektet
+https://www.canva.com/design/DAGdp2EWCWI/0hALU1ehCQrZlyx02ViUxQ/edit
 
 - Lista kända säkerhetsrisker som behöver åtgärdas
+- Kortnummer: 3, 6, 7, 10, 14, 15, 16
+  
 - Förslag på framtida förbättringar
+- 3: Blockera användarkonton efter många anslutningsförsök. Ställ in en stark autentiserings-sätt (tvåfaktorsautentisering).
+- 6: Definiera en white list över file extensions som är tillåtna och neka alla andra filtyper.
+- 7: Tillåt endast krypterad kommunikation med webbserver, genom att distribuera ett SSL-certifikat och aktivera HSTS-alternativet.
+Omdirigera port 80 till 443.
+Kontrollera regelbundet vilka krypteringsalgoritmer som stöds av servern för att säkerställa att de alla är uppdaterade enligt bästa säkerhetspraxis.
+- 10: Lägga till någon form av Captcha vid inlogg. Maximera antal listings (ex 3st) en användare kan göra per dag.
+- 14: Sätt in säkerhet så endast admin kan uppdatera roll på user.
+- 15: DTO för user.
+- 16: Implementera access logging för all känslig data. Säkerställ att inga personuppgifter skrivs till loggar. Implementera automatisk data retention - radera data
+som inte längre behövs. 
 
 ## Tips för genomförande
 
