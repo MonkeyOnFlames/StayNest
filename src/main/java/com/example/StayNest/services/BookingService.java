@@ -52,14 +52,7 @@ public class BookingService {
         booking.setEndDate(bookingRequestDTO.getEndDate());
 
         if (bookingRequestDTO.getTotalAmount() == null) {
-            // ChronoUnit.DAYS.between beräknar antalet hela dagar mellan två datum
-            // den räknar INTE med slutdatumet i resultatet, endast hela dagar mellan datumen...
-            // exempel: mellan 2025-06-05 och 2025-06-10 blir resultatet 5 dagar
-            // lägger till 1 till slutdatumet så att både check-in och check-out dagen räknas med
-            long daysBetween = ChronoUnit.DAYS.between(booking.getStartDate(), booking.getEndDate()) + 1;
-            // totalpriset blir listningens pris per natt multiplicerat med antalet nätter
-            double totalAmount = daysBetween * listing.getPrice();
-            booking.setTotalAmount(totalAmount);
+            calculateTotalAmount(booking);
         } else {
             booking.setTotalAmount(bookingRequestDTO.getTotalAmount());
         }
@@ -185,19 +178,17 @@ public class BookingService {
            if (booking.getReview() != null){
                existingBooking.setReview(booking.getReview());
            }
-           if (booking.getTotalAmount() != null){
-               existingBooking.setTotalAmount(booking.getTotalAmount());
-           }
            if (booking.getStartDate() != null){
                existingBooking.setStartDate(booking.getStartDate());
+               calculateTotalAmount(existingBooking);
            }
            if (booking.getEndDate() != null){
                existingBooking.setEndDate(booking.getEndDate());
+               calculateTotalAmount(existingBooking);
            }
        } else {
            throw new UnauthorizedException("You do not have permission to update this booking.");
        }
-
 
        Booking updatedBooking =  bookingRepository.save(existingBooking);
 
@@ -249,5 +240,16 @@ public class BookingService {
         bookingResponseDTO.setCreatedAt(booking.getCreatedAt());
 
         return bookingResponseDTO;
+    }
+
+    private void calculateTotalAmount (Booking booking) {
+        // ChronoUnit.DAYS.between beräknar antalet hela dagar mellan två datum
+        // den räknar INTE med slutdatumet i resultatet, endast hela dagar mellan datumen...
+        // exempel: mellan 2025-06-05 och 2025-06-10 blir resultatet 5 dagar
+        // lägger till 1 till slutdatumet så att både check-in och check-out dagen räknas med
+        long daysBetween = ChronoUnit.DAYS.between(booking.getStartDate(), booking.getEndDate()) + 1;
+        // totalpriset blir listningens pris per natt multiplicerat med antalet nätter
+        double totalAmount = daysBetween * booking.getListing().getPrice();
+        booking.setTotalAmount(totalAmount);
     }
 }

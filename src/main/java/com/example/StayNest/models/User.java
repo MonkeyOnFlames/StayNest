@@ -10,7 +10,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.Set;
 
 @Document(collection = "users")
@@ -59,10 +59,10 @@ public class User {
     private String phone;
 
     @CreatedDate
-    private Date createdAt;
+    private LocalDate createdAt;
 
     @LastModifiedDate
-    private Date updatedAt;
+    private LocalDate updatedAt;
 
     public User() {
     }
@@ -167,19 +167,19 @@ public class User {
         this.age = age;
     }
 
-    public Date getCreatedAt() {
+    public LocalDate getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(LocalDate createdAt) {
         this.createdAt = createdAt;
     }
 
-    public Date getUpdatedAt() {
+    public LocalDate getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(Date updatedAt) {
+    public void setUpdatedAt(LocalDate updatedAt) {
         this.updatedAt = updatedAt;
     }
 

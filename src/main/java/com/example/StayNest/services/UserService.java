@@ -2,6 +2,7 @@ package com.example.StayNest.services;
 
 import com.example.StayNest.dto.BookingResponseDTO;
 import com.example.StayNest.dto.ListingResponseGetAll;
+import com.example.StayNest.dto.UserResponseDTO;
 import com.example.StayNest.exceptions.ResourceNotFoundException;
 import com.example.StayNest.exceptions.UnauthorizedException;
 import com.example.StayNest.models.Booking;
@@ -22,8 +23,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -69,19 +70,23 @@ public class UserService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
-    public Optional<User> getUserById(String id) {
-        userRepository.findById(id)
+    public UserResponseDTO getUserById(String id) {
+        User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
-        return userRepository.findById(id);
+        return convertToUserResponseDTO(user);
     }
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<UserResponseDTO> getAllUsers() {
+        List<User> users = userRepository.findAll();
+
+        return users.stream()
+                .map(this::convertToUserResponseDTO)
+                .collect(Collectors.toList());
     }
 
     //when we implement register/login we need to delete some fields
-    public User updateUser(String id, User user) {
+    public UserResponseDTO updateUser(String id, User user) {
         User existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
@@ -120,7 +125,9 @@ public class UserService {
                 existingUser.setAge(user.getAge());
             }
 
-            return userRepository.save(existingUser);
+            userRepository.save(existingUser);
+
+            return convertToUserResponseDTO(existingUser);
 
         }else {
             throw new UnauthorizedException("You do not have permission to update this user.");
@@ -256,6 +263,15 @@ public class UserService {
         return user;
     }
 
+    private UserResponseDTO convertToUserResponseDTO(User user) {
+        UserResponseDTO userResponseDTO = new UserResponseDTO();
 
+        userResponseDTO.setId(user.getId());
+        userResponseDTO.setFirstName(user.getFirstName());
+        userResponseDTO.setCreatedAt(user.getCreatedAt());
+
+        return userResponseDTO;
+
+    }
 }
 
