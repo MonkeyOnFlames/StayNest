@@ -1,5 +1,8 @@
 package com.example.StayNest.services;
 
+import com.example.StayNest.dto.BookingResponseDTO;
+import com.example.StayNest.dto.ListingResponseGetAll;
+import com.example.StayNest.dto.UserResponseDTO;
 import com.example.StayNest.exceptions.ResourceNotFoundException;
 import com.example.StayNest.exceptions.UnauthorizedException;
 import com.example.StayNest.models.Booking;
@@ -18,9 +21,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -34,6 +38,7 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
         this.bookingRepository = bookingRepository;
         this.listingRepository = listingRepository;
+
     }
 
     public void registerUser(User user) {
@@ -59,43 +64,33 @@ public class UserService {
         return userRepository.findByEmail(email).isPresent();
     }
 
-
-    //this needs to be changed when we implement register and log in
-//    public User createUser(@Valid User user) {
-//        if (user.getRoles() == null || user.getRoles().isEmpty()) {
-//             user.setRoles(Set.of(Role.USER));
-//        }
-//
-//        validateUser(user);
-//
-//        return userRepository.save(user);
-//    }
-
     //find user by username
     public User findByUsername(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
-    public Optional<User> getUserById(String id) {
-        userRepository.findById(id)
+    public UserResponseDTO getUserById(String id) {
+        User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
-        return userRepository.findById(id);
+        return convertToUserResponseDTO(user);
     }
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<UserResponseDTO> getAllUsers() {
+        List<User> users = userRepository.findAll();
+
+        return users.stream()
+                .map(this::convertToUserResponseDTO)
+                .collect(Collectors.toList());
     }
 
     //when we implement register/login we need to delete some fields
-    public User updateUser(String id, User user) {
+    public UserResponseDTO updateUser(String id, User user) {
         User existingUser = userRepository.findById(id)
-                .orElseThrow(() -> new /*ResponseStatusException(HttpStatus.NOT_FOUND,*/
-                        ResourceNotFoundException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         User loggedInUser = getLoggedInUser();
-//        UserDetails currentUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         // only updates none null fields
         if (loggedInUser.getUsername().equals(existingUser.getUsername())) {
@@ -130,7 +125,9 @@ public class UserService {
                 existingUser.setAge(user.getAge());
             }
 
-            return userRepository.save(existingUser);
+            userRepository.save(existingUser);
+
+            return convertToUserResponseDTO(existingUser);
 
         }else {
             throw new UnauthorizedException("You do not have permission to update this user.");
@@ -142,7 +139,6 @@ public class UserService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
         User loggedInUser = getLoggedInUser();
-//        UserDetails currentUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         boolean isAdmin = userRepository.existsByUsernameAndRolesContaining(loggedInUser.getUsername(), Role.ADMIN);
 
         //if admin delete a user account
@@ -168,21 +164,36 @@ public class UserService {
         }
     }
 
-    public List<Booking> getUserBookings(String id) {
+    public List<BookingResponseDTO> getUserBookings(String id) {
         //went through listingRepository to get more info about the listing
         User existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         User loggedInUser = getLoggedInUser();
+        List<BookingResponseDTO> bookingResponseDTOs = new ArrayList<>();
 
         if (loggedInUser.getUsername().equals(existingUser.getUsername())) {
-
             List<Booking> bookings = bookingRepository.findByUserId(id);
             if (bookings.isEmpty()) {
                 throw new ResourceNotFoundException("Bookings not found with user ID: " + id);
             }
+        for (Booking booking : bookings) {
+            BookingResponseDTO bookingResponseDTO = new BookingResponseDTO();
+            bookingResponseDTO.setId(booking.getId());
+            bookingResponseDTO.setListingId(booking.getListing().getId());
+            bookingResponseDTO.setListingName(booking.getListing().getName());
+            bookingResponseDTO.setUserId(booking.getUser().getId());
+            bookingResponseDTO.setUserName(booking.getUser().getFirstName());
+            bookingResponseDTO.setTotalAmount(booking.getTotalAmount());
+            bookingResponseDTO.setStartDate(booking.getStartDate());
+            bookingResponseDTO.setEndDate(booking.getEndDate());
+            bookingResponseDTO.setCreatedAt(booking.getCreatedAt());
 
-            return bookings;
+            bookingResponseDTOs.add(bookingResponseDTO);
+
+        }
+
+            return bookingResponseDTOs;
 
         }else {
             throw new UnauthorizedException("You do not have permission to see this user bookings.");
@@ -190,14 +201,29 @@ public class UserService {
 
     }
 
-        public List<Listing> getUserListings(String id) {
+        public List<ListingResponseGetAll> getUserListings(String id) {
             //went through listingRepository to get more info about the listing
             List<Listing> listings = listingRepository.findByUserId(id);
+            List<ListingResponseGetAll> listingResponseGetAlls = new ArrayList<>();
             if (listings.isEmpty()) {
                 throw new ResourceNotFoundException("Listings not found with user ID: " + id);
             }
+            for (Listing listing : listings) {
+                ListingResponseGetAll listingResponseGetAll = new ListingResponseGetAll();
+                listingResponseGetAll.setId(listing.getId());
+                listingResponseGetAll.setFirstName(listing.getUser().getFirstName());
+                listingResponseGetAll.setName(listing.getName());
+                listingResponseGetAll.setLocation(listing.getLocation());
+                listingResponseGetAll.setPrice(listing.getPrice());
+                listingResponseGetAll.setListingTypes(listing.getListingTypes());
+                listingResponseGetAll.setEnvironment(listing.getEnvironment());
+                listingResponseGetAll.setPictureURLs(listing.getPictureURLs());
+                listingResponseGetAll.setAvailabilities(listing.getAvailabilities());
 
-            return listings;
+                listingResponseGetAlls.add(listingResponseGetAll);
+            }
+
+            return listingResponseGetAlls;
         }
 
 
@@ -237,6 +263,15 @@ public class UserService {
         return user;
     }
 
+    private UserResponseDTO convertToUserResponseDTO(User user) {
+        UserResponseDTO userResponseDTO = new UserResponseDTO();
 
+        userResponseDTO.setId(user.getId());
+        userResponseDTO.setFirstName(user.getFirstName());
+        userResponseDTO.setCreatedAt(user.getCreatedAt());
+
+        return userResponseDTO;
+
+    }
 }
 

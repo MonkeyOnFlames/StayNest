@@ -1,5 +1,6 @@
 package com.example.StayNest.dto;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public class BookingResponseDTO {
@@ -10,8 +11,8 @@ public class BookingResponseDTO {
     private String userId;
     private String userName;
     private double totalAmount;
-    private Date startDate;
-    private Date endDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
     private Date createdAt;
 
 
@@ -66,19 +67,19 @@ public class BookingResponseDTO {
         this.totalAmount = totalAmount;
     }
 
-    public Date getStartDate() {
+    public LocalDate getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
     }
 
-    public Date getEndDate() {
+    public LocalDate getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
     }
 

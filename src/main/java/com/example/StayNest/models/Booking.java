@@ -9,6 +9,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Document(collection = "bookings")
@@ -34,10 +35,10 @@ public class Booking {
     private Double totalAmount;
 
     @NotNull(message = "Start date can not be null")
-    private Date startDate;
+    private LocalDate startDate;
 
     @NotNull(message = "End date can not be null")
-    private Date endDate;
+    private LocalDate endDate;
 
     @CreatedDate
     private Date CreatedAt;
@@ -85,19 +86,19 @@ public class Booking {
         this.totalAmount = totalAmount;
     }
 
-    public @NotNull(message = "Start date can not be null") Date getStartDate() {
+    public @NotNull(message = "Start date can not be null") LocalDate getStartDate() {
         return startDate;
     }
 
-    public void setStartDate (@NotNull(message = "Start date can not be null") Date startDate) {
+    public void setStartDate (@NotNull(message = "Start date can not be null") LocalDate startDate) {
         this.startDate = startDate;
     }
 
-    public @NotNull(message = "End date can not be null") Date getEndDate() {
+    public @NotNull(message = "End date can not be null") LocalDate getEndDate() {
         return endDate;
     }
 
-    public void setEndDate (@NotNull(message = "End date can not be null") Date endDate) {
+    public void setEndDate (@NotNull(message = "End date can not be null") LocalDate endDate) {
         this.endDate = endDate;
     }
 
