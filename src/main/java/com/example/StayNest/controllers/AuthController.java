@@ -161,7 +161,7 @@ public class AuthController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         //control if user is authenticated
-        if(authentication == null || !authentication.isAuthenticated() || !(authentication instanceof AnonymousAuthenticationToken)) {
+        if(authentication == null || !authentication.isAuthenticated() || (authentication instanceof AnonymousAuthenticationToken)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not authenticated");
         }
 
