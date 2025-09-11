@@ -4,6 +4,7 @@ import com.example.StayNest.dto.BookingResponseDTO;
 import com.example.StayNest.exceptions.ResourceNotFoundException;
 import com.example.StayNest.exceptions.UnauthorizedException;
 import com.example.StayNest.factories.BookingFactory;
+import com.example.StayNest.factories.CalculateTotalAmount;
 import com.example.StayNest.models.Booking;
 import com.example.StayNest.models.User;
 import com.example.StayNest.repositories.BookingRepository;
@@ -168,6 +169,7 @@ public class BookingService {
                .orElseThrow(() -> new ResourceNotFoundException("Booking not found with id " + id));
 
        User loggedInUser = userService.getLoggedInUser();
+       CalculateTotalAmount calcTotalAmount = new CalculateTotalAmount();
 
        if (loggedInUser.getUsername().equals(existingBooking.getUser().getUsername())) {
            //uppdatera endast icke null fält
@@ -182,11 +184,11 @@ public class BookingService {
            }
            if (booking.getStartDate() != null){
                existingBooking.setStartDate(booking.getStartDate());
-               existingBooking.setTotalAmount(bookingFactory.calculateTotalAmount(existingBooking));
+               existingBooking.setTotalAmount(calcTotalAmount.calculateTotalAmount(existingBooking));
            }
            if (booking.getEndDate() != null){
                existingBooking.setEndDate(booking.getEndDate());
-               existingBooking.setTotalAmount(bookingFactory.calculateTotalAmount(existingBooking));
+               existingBooking.setTotalAmount(calcTotalAmount.calculateTotalAmount(existingBooking));
            }
        } else {
            throw new UnauthorizedException("You do not have permission to update this booking.");
