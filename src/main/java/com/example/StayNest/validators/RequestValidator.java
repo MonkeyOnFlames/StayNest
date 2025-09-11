@@ -15,11 +15,11 @@ public abstract class RequestValidator {
         this.nextValidator = nextValidator;
     }
 
-    public void logMessage(int validate, String message) {
+    public void validateMessage(int validate, String message) {
         if (this.validate == validate) {
             write(message);
         } else if (nextValidator != null) {
-            nextValidator.logMessage(validate, message);
+            nextValidator.validateMessage(validate, message);
         }
     }
 
