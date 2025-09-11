@@ -20,16 +20,17 @@ public class BookingFactory {
     public Booking createBookingObject (Booking booking) {
         Booking tempBooking = new Booking();
 
-        tempBooking.setId(booking.getId());
+
         tempBooking.setListing(booking.getListing());
         tempBooking.setUser(booking.getUser());
         tempBooking.setTotalAmount(booking.getTotalAmount());
         tempBooking.setReview(booking.getReview());
         tempBooking.setStartDate(booking.getStartDate());
         tempBooking.setEndDate(booking.getEndDate());
-        tempBooking.setCreatedAt(tempBooking.getCreatedAt());
 
-        return tempBooking;
+        Booking savedBooking = bookingRepository.save(tempBooking);
+
+        return savedBooking;
     }
     /*Booking booking = new Booking();
 
