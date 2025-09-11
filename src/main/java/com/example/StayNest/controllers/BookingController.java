@@ -1,7 +1,6 @@
 package com.example.StayNest.controllers;
 
 
-import com.example.StayNest.dto.BookingRequestDTO;
 import com.example.StayNest.dto.BookingResponseDTO;
 import com.example.StayNest.models.Booking;
 import com.example.StayNest.repositories.BookingRepository;
@@ -24,8 +23,8 @@ public class BookingController {
 
     @PostMapping()
     @PreAuthorize("hasAnyRole('USER', 'LANDLORD', 'ADMIN')")
-    public ResponseEntity<BookingResponseDTO> createBooking(@RequestBody BookingRequestDTO booking){
-        BookingResponseDTO createdBooking = bookingService.createBooking(booking);
+    public ResponseEntity<Booking> createBooking(@RequestBody Booking booking){
+        Booking createdBooking = bookingService.createBooking(booking);
         return new ResponseEntity<>(createdBooking, HttpStatus.CREATED);
     }
 
