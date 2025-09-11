@@ -2,17 +2,18 @@ package com.example.StayNest.factories;
 
 public class ValidatorProcessor {
 //    private static RequestValidator getChainOfValidators() {
-//        RequestValidator dateValidator = new DateValidator(RequestValidator.DATE);
 //        RequestValidator validateBooking = new ValidateBooking(RequestValidator.BOOKING);
-//        RequestValidator authorizationValidator = new AuthorizationValidator(RequestValidator.AUTH);
+//        RequestValidator dateValidator = new DateValidator(RequestValidator.DATE);
 //        RequestValidator availabilityValidator = new AvailabilityValidator(RequestValidator.AVAILABLE);
 //        RequestValidator conflictValidator = new ConflictValidator(RequestValidator.CONFLICT);
+//        RequestValidator authorizationValidator = new AuthorizationValidator(RequestValidator.AUTH);
+
 //
-//        dateValidator.setNextValidator(validateBooking);
-//        validateBooking.setNextValidator(authorizationValidator);
-//        authorizationValidator.setNextValidator(availabilityValidator);
+//        validateBooking.setNextValidator(dateValidator);
+//        dateValidator.setNextValidator(availabilityValidator);
 //        availabilityValidator.setNextValidator(conflictValidator);
+//        conflictValidator.setNextValidator(authorizationValidator);
 //
-//        return dateValidator;
+//        return validateBooking;
 //    }
 }
