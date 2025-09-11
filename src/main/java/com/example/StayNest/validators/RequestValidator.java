@@ -1,4 +1,4 @@
-package com.example.StayNest.factories;
+package com.example.StayNest.validators;
 
 public abstract class RequestValidator {
     public static int BOOKING = 1;

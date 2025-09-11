@@ -1,4 +1,4 @@
-package com.example.StayNest.factories;
+package com.example.StayNest.validators;
 
 public class ValidatorProcessor {
 //    private static RequestValidator getChainOfValidators() {
