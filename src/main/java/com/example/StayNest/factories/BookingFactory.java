@@ -1,9 +1,14 @@
 package com.example.StayNest.factories;
 
+import com.example.StayNest.exceptions.ResourceNotFoundException;
 import com.example.StayNest.models.Booking;
+import com.example.StayNest.models.Listing;
+import com.example.StayNest.models.User;
 import com.example.StayNest.repositories.BookingRepository;
 import com.example.StayNest.repositories.ListingRepository;
 import com.example.StayNest.services.UserService;
+
+import java.time.temporal.ChronoUnit;
 
 public class BookingFactory {
 
@@ -17,48 +22,52 @@ public class BookingFactory {
         this.userService = userService;
     }
 
+
     public Booking createBookingObject (Booking booking) {
         Booking tempBooking = new Booking();
-
-
-        tempBooking.setListing(booking.getListing());
-        tempBooking.setUser(booking.getUser());
-        tempBooking.setTotalAmount(booking.getTotalAmount());
-        tempBooking.setReview(booking.getReview());
-        tempBooking.setStartDate(booking.getStartDate());
-        tempBooking.setEndDate(booking.getEndDate());
-
-        Booking savedBooking = bookingRepository.save(tempBooking);
-
-        return savedBooking;
-    }
-    /*Booking booking = new Booking();
 
         User loggedInUser = userService.getLoggedInUser();
         booking.setUser(loggedInUser);
 
         Listing listing = null;
 
-        // kontrollerar att requesten innehåller en giltig listning
-        if (bookingRequestDTO.getListing() != null && bookingRequestDTO.getListing().getId() != null) {
-            listing = listingRepository.findListingById(bookingRequestDTO.getListing().getId());
+        if (booking.getListing() != null && booking.getListing().getId() != null) {
+            listing = listingRepository.findListingById(booking.getListing().getId());
             if (listing == null) {
-                throw new ResourceNotFoundException("Listing not found with id: " + bookingRequestDTO.getListing().getId());
+                throw new ResourceNotFoundException("Listing not found with id: " + booking.getListing().getId());
             }
         } else {
             throw new IllegalArgumentException("Listing ID is required");
         }
 
-        booking.setListing(listing);
-        booking.setStartDate(bookingRequestDTO.getStartDate());
-        booking.setEndDate(bookingRequestDTO.getEndDate());
+        tempBooking.setListing(listing);
+        tempBooking.setTotalAmount(booking.getTotalAmount());
+        tempBooking.setReview(booking.getReview());
+        tempBooking.setStartDate(booking.getStartDate());
+        tempBooking.setEndDate(booking.getEndDate());
 
-        if (bookingRequestDTO.getTotalAmount() == null) {
-            calculateTotalAmount(booking);
-        } else {
-            booking.setTotalAmount(bookingRequestDTO.getTotalAmount());
-        }
+        tempBooking.setTotalAmount(calculateTotalAmount(tempBooking));
 
+        Booking savedBooking = bookingRepository.save(tempBooking);
+
+        return savedBooking;
+    }
+
+
+
+    // Hjälpmetod som gör att priset på en bokning räknas ut automatiskt
+    public Double calculateTotalAmount (Booking booking) {
+        // ChronoUnit.DAYS.between beräknar antalet hela dagar mellan två datum
+        // den räknar INTE med slutdatumet i resultatet, endast hela dagar mellan datumen...
+        // exempel: mellan 2025-06-05 och 2025-06-10 blir resultatet 5 dagar
+        // lägger till 1 till slutdatumet så att både check-in och check-out dagen räknas med
+        long daysBetween = ChronoUnit.DAYS.between(booking.getStartDate(), booking.getEndDate()) + 1;
+        // totalpriset blir listningens pris per natt multiplicerat med antalet nätter
+        double totalAmount = daysBetween * booking.getListing().getPrice();
+        return totalAmount;
+    }
+
+    /*
         // validerar bokningen och uppdaterar listningens tillgänglighet
         validateAndUpdateAvailability(booking);
 

@@ -10,25 +10,23 @@ import com.example.StayNest.repositories.BookingRepository;
 import com.example.StayNest.repositories.ListingRepository;
 import org.springframework.stereotype.Service;
 
-import java.time.temporal.ChronoUnit;
-
 @Service
 public class BookingService {
 
     private final BookingRepository bookingRepository;
     private final ListingRepository listingRepository;
     private final UserService userService;
+    private final BookingFactory bookingFactory;
 
-    public BookingService(BookingRepository bookingRepository, ListingRepository listingRepository, UserService userService) {
+    public BookingService(BookingRepository bookingRepository, ListingRepository listingRepository, UserService userService, BookingFactory bookingFactory) {
         this.bookingRepository = bookingRepository;
         this.listingRepository = listingRepository;
         this.userService = userService;
+        this.bookingFactory = bookingFactory;
     }
 
     // Helenas createBooking
     public Booking createBooking(Booking booking) {
-
-        BookingFactory bookingFactory = new BookingFactory(bookingRepository, listingRepository, userService);
 
         Booking tempBooking = bookingFactory.createBookingObject(booking);
 
@@ -184,11 +182,11 @@ public class BookingService {
            }
            if (booking.getStartDate() != null){
                existingBooking.setStartDate(booking.getStartDate());
-               calculateTotalAmount(existingBooking);
+               existingBooking.setTotalAmount(bookingFactory.calculateTotalAmount(existingBooking));
            }
            if (booking.getEndDate() != null){
                existingBooking.setEndDate(booking.getEndDate());
-               calculateTotalAmount(existingBooking);
+               existingBooking.setTotalAmount(bookingFactory.calculateTotalAmount(existingBooking));
            }
        } else {
            throw new UnauthorizedException("You do not have permission to update this booking.");
@@ -246,14 +244,5 @@ public class BookingService {
         return bookingResponseDTO;
     }
 
-    private void calculateTotalAmount (Booking booking) {
-        // ChronoUnit.DAYS.between beräknar antalet hela dagar mellan två datum
-        // den räknar INTE med slutdatumet i resultatet, endast hela dagar mellan datumen...
-        // exempel: mellan 2025-06-05 och 2025-06-10 blir resultatet 5 dagar
-        // lägger till 1 till slutdatumet så att både check-in och check-out dagen räknas med
-        long daysBetween = ChronoUnit.DAYS.between(booking.getStartDate(), booking.getEndDate()) + 1;
-        // totalpriset blir listningens pris per natt multiplicerat med antalet nätter
-        double totalAmount = daysBetween * booking.getListing().getPrice();
-        booking.setTotalAmount(totalAmount);
-    }
+
 }
