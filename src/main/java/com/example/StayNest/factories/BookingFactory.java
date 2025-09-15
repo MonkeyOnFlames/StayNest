@@ -4,6 +4,7 @@ import com.example.StayNest.models.Booking;
 import com.example.StayNest.repositories.BookingRepository;
 import com.example.StayNest.repositories.ListingRepository;
 import com.example.StayNest.services.UserService;
+import com.example.StayNest.validators.ValidateBooking;
 
 public class BookingFactory {
 
@@ -19,6 +20,7 @@ public class BookingFactory {
 
     public Booking createBookingObject (Booking booking) {
         Booking tempBooking = new Booking();
+        ValidateBooking validateBooking = new ValidateBooking(booking);
 
 
         tempBooking.setListing(booking.getListing());
@@ -27,6 +29,8 @@ public class BookingFactory {
         tempBooking.setReview(booking.getReview());
         tempBooking.setStartDate(booking.getStartDate());
         tempBooking.setEndDate(booking.getEndDate());
+
+        validateBooking.validateBooking(booking);
 
         Booking savedBooking = bookingRepository.save(tempBooking);
 
