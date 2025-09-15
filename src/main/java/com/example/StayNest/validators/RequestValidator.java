@@ -48,6 +48,7 @@ public abstract class RequestValidator {
         }*/
     }
 
+//    protected abstract void validate(Validate validate);
 
 //    public void validateMessage(boolean validate, String message) {
 //        if (this.validate == validate) {

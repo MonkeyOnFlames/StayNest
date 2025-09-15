@@ -10,7 +10,8 @@ public class ValidateBooking extends RequestValidator{
         this.booking = booking;
     }
 
-    public void validateBooking(Booking booking) {
+
+    public void validateBooking(/*Booking booking*/) {
         if (booking.getListing() == null) {
             throw new IllegalArgumentException("Listing cannot be empty or null");
         }
@@ -28,13 +29,12 @@ public class ValidateBooking extends RequestValidator{
         }
     }
 
-
-    public void validationHandler (Validate validate, Booking booking) {
-        validateBooking(booking);
+    @Override
+    public void validationHandler (Validate validate) {
+        validateBooking();
 
         if (validate.isBooking()) {
-//            System.out.println("Booking succesful");
-
+            System.out.println("Booking succesful");
             super.validationHandler(validate);
         } else {
             System.out.println("Booking failed");
@@ -42,9 +42,13 @@ public class ValidateBooking extends RequestValidator{
         }
     }
 
+//    @Override
+//    protected void validate(Validate validate) {
+//
+//    }
 
 
-    }
+}
 
 
 
