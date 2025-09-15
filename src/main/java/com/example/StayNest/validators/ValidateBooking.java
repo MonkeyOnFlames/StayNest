@@ -1,21 +1,49 @@
 package com.example.StayNest.validators;
 
+import com.example.StayNest.models.Booking;
+
 public class ValidateBooking extends RequestValidator{
+
+    private Booking booking;
+
+    public ValidateBooking(Booking booking) {
+        this.booking = booking;
+    }
+
+    private void validateBooking(Booking booking) {
+        if (booking.getListing() == null) {
+            throw new IllegalArgumentException("Listing cannot be empty or null");
+        }
+        if (booking.getUser() == null) {
+            throw new IllegalArgumentException("User cannot be empty or null");
+        }
+        if (booking.getTotalAmount() < 0) {
+            throw new IllegalArgumentException("Price cannot be less than 0");
+        }
+        if (booking.getStartDate() == null) {
+            throw new IllegalArgumentException("Start date cannot be null");
+        }
+        if (booking.getEndDate() == null) {
+            throw new IllegalArgumentException("End date cannot be null");
+        }
+    }
+
 
     public void validationHandler (Validate validate) {
         if (validate.isBooking()) {
 //            System.out.println("Booking succesful");
-            super.validationHandler(validate, "Booking succesful");
+            super.validationHandler(validate);
         } else {
             System.out.println("Booking failed");
             validate.setValid(false);
         }
     }
 
-    @Override
-    protected void write(String message) {
+
 
     }
+
+
 
 
 //    @Override
@@ -29,7 +57,7 @@ public class ValidateBooking extends RequestValidator{
 //            validate.setValid(false);
 //        }
 //    }
-}
+//}
 
 
 

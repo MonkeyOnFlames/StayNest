@@ -36,8 +36,8 @@ public class Validate {
         return auth;
     }
 
-    public boolean setValid(boolean valid) {
-        return valid;
+    public void setValid(boolean valid) {
+        this.valid = valid;
     }
 
 

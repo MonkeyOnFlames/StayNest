@@ -40,13 +40,14 @@ public abstract class RequestValidator {
 //        }
 //    }
 
-    public void validationHandler(Validate validate, String message) {
+    public void validationHandler(Validate validate/*, String message*/) {
         if (nextValidator != null) {
-            nextValidator.validationHandler(validate, message);
-        } else {
+            nextValidator.validationHandler(validate/*, message*/);
+        } /*else {
             write(message);
-        }
+        }*/
     }
+
 
 //    public void validateMessage(boolean validate, String message) {
 //        if (this.validate == validate) {
@@ -56,5 +57,5 @@ public abstract class RequestValidator {
 //        }
 //    }
 
-    abstract protected void write(String message);
+//    abstract protected void write(String message);
 }
