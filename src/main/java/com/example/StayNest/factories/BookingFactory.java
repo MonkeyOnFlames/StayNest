@@ -1,5 +1,6 @@
 package com.example.StayNest.factories;
 
+import com.example.StayNest.dto.BookingResponseDTO;
 import com.example.StayNest.exceptions.ResourceNotFoundException;
 import com.example.StayNest.models.Booking;
 import com.example.StayNest.models.Listing;
@@ -7,10 +8,12 @@ import com.example.StayNest.models.User;
 import com.example.StayNest.repositories.BookingRepository;
 import com.example.StayNest.repositories.ListingRepository;
 import com.example.StayNest.services.UserService;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.List;
 
+@Component
 public class BookingFactory {
 
     private final BookingRepository bookingRepository;
@@ -24,8 +27,9 @@ public class BookingFactory {
     }
 
 
-    public Booking createBookingObject (Booking booking) {
+    public BookingResponseDTO createBookingObject (Booking booking) {
         Booking tempBooking = new Booking();
+        ConvertToBookingResponseDTO convertToBookingResponseDTO = new ConvertToBookingResponseDTO();
 
         User loggedInUser = userService.getLoggedInUser();
         tempBooking.setUser(loggedInUser);
@@ -55,7 +59,7 @@ public class BookingFactory {
 
         Booking savedBooking = bookingRepository.save(tempBooking);
 
-        return savedBooking;
+        return convertToBookingResponseDTO.convertToBookingResponseDTO(savedBooking);
     }
 
 

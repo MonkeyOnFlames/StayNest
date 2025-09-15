@@ -5,6 +5,7 @@ import com.example.StayNest.exceptions.ResourceNotFoundException;
 import com.example.StayNest.exceptions.UnauthorizedException;
 import com.example.StayNest.factories.BookingFactory;
 import com.example.StayNest.factories.CalculateTotalAmount;
+import com.example.StayNest.factories.ConvertToBookingResponseDTO;
 import com.example.StayNest.models.Booking;
 import com.example.StayNest.models.User;
 import com.example.StayNest.repositories.BookingRepository;
@@ -27,9 +28,9 @@ public class BookingService {
     }
 
     // Helenas createBooking
-    public Booking createBooking(Booking booking) {
+    public BookingResponseDTO createBooking(Booking booking) {
 
-        Booking tempBooking = bookingFactory.createBookingObject(booking);
+        BookingResponseDTO tempBooking = bookingFactory.createBookingObject(booking);
 
         return tempBooking;
 
@@ -154,7 +155,7 @@ public class BookingService {
 
         if (loggedInUser.getUsername().equals(existingBooking.getUser().getUsername())
         || loggedInUser.getUsername().equals(existingBooking.getListing().getUser().getUsername())) {
-            return convertToBookingResponseDTO(existingBooking);
+            return ConvertToBookingResponseDTO.convertToBookingResponseDTO(existingBooking);
         }
         else {
             throw new UnauthorizedException("You are not authorized to view this booking");
@@ -196,7 +197,7 @@ public class BookingService {
 
        Booking updatedBooking =  bookingRepository.save(existingBooking);
 
-       return convertToBookingResponseDTO(updatedBooking);
+       return ConvertToBookingResponseDTO.convertToBookingResponseDTO(updatedBooking);
     }
 
     public void deleteBooking(String id) {
@@ -231,20 +232,7 @@ public class BookingService {
         }
 
     }
-    private BookingResponseDTO convertToBookingResponseDTO(Booking booking) {
-        BookingResponseDTO bookingResponseDTO = new BookingResponseDTO();
-        bookingResponseDTO.setId(booking.getId());
-        bookingResponseDTO.setListingId(booking.getListing().getId());
-        bookingResponseDTO.setListingName(booking.getListing().getName());
-        bookingResponseDTO.setUserId(booking.getUser().getId());
-        bookingResponseDTO.setUserName(booking.getUser().getFirstName());
-        bookingResponseDTO.setTotalAmount(booking.getTotalAmount());
-        bookingResponseDTO.setStartDate(booking.getStartDate());
-        bookingResponseDTO.setEndDate(booking.getEndDate());
-        bookingResponseDTO.setCreatedAt(booking.getCreatedAt());
 
-        return bookingResponseDTO;
-    }
 
 
 }
