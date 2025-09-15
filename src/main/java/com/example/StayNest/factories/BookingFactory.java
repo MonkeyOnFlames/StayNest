@@ -28,11 +28,10 @@ public class BookingFactory {
 
 
     public BookingResponseDTO createBookingObject (Booking booking) {
-        Booking tempBooking = new Booking();
         ConvertToBookingResponseDTO convertToBookingResponseDTO = new ConvertToBookingResponseDTO();
 
         User loggedInUser = userService.getLoggedInUser();
-        tempBooking.setUser(loggedInUser);
+        booking.setUser(loggedInUser);
 
         Listing listing = null;
 
@@ -45,21 +44,15 @@ public class BookingFactory {
             throw new IllegalArgumentException("Listing ID is required");
         }
 
-        tempBooking.setListing(listing);
-        tempBooking.setTotalAmount(booking.getTotalAmount());
-        tempBooking.setReview(booking.getReview());
-        tempBooking.setStartDate(booking.getStartDate());
-        tempBooking.setEndDate(booking.getEndDate());
+        booking.setListing(listing);
 
 
         CalculateTotalAmount calcTotalAmount = new CalculateTotalAmount();
-        tempBooking.setTotalAmount(calcTotalAmount.calculateTotalAmount(tempBooking));
+        booking.setTotalAmount(calcTotalAmount.calculateTotalAmount(booking));
 
-        validateAndUpdateAvailability(tempBooking);
+        validateAndUpdateAvailability(booking);
 
-        Booking savedBooking = bookingRepository.save(tempBooking);
-
-        return convertToBookingResponseDTO.convertToBookingResponseDTO(savedBooking);
+        return convertToBookingResponseDTO.convertToBookingResponseDTO(bookingRepository.save(booking));
     }
 
 
