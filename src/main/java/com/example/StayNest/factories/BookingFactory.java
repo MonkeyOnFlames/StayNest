@@ -1,10 +1,21 @@
 package com.example.StayNest.factories;
 
+import com.example.StayNest.dto.BookingResponseDTO;
+import com.example.StayNest.exceptions.ResourceNotFoundException;
+import com.example.StayNest.helpClasses.CalculateTotalAmount;
+import com.example.StayNest.helpClasses.ConvertToBookingResponseDTO;
 import com.example.StayNest.models.Booking;
+import com.example.StayNest.models.Listing;
+import com.example.StayNest.models.User;
 import com.example.StayNest.repositories.BookingRepository;
 import com.example.StayNest.repositories.ListingRepository;
 import com.example.StayNest.services.UserService;
+import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+import java.util.List;
+
+@Component
 public class BookingFactory {
 
     private final BookingRepository bookingRepository;
@@ -17,59 +28,44 @@ public class BookingFactory {
         this.userService = userService;
     }
 
-    public Booking createBookingObject (Booking booking) {
-        Booking tempBooking = new Booking();
 
-
-        tempBooking.setListing(booking.getListing());
-        tempBooking.setUser(booking.getUser());
-        tempBooking.setTotalAmount(booking.getTotalAmount());
-        tempBooking.setReview(booking.getReview());
-        tempBooking.setStartDate(booking.getStartDate());
-        tempBooking.setEndDate(booking.getEndDate());
-
-        Booking savedBooking = bookingRepository.save(tempBooking);
-
-        return savedBooking;
-    }
-    /*Booking booking = new Booking();
+    public BookingResponseDTO createBookingObject (Booking booking) {
+        ConvertToBookingResponseDTO convertToBookingResponseDTO = new ConvertToBookingResponseDTO();
 
         User loggedInUser = userService.getLoggedInUser();
         booking.setUser(loggedInUser);
 
         Listing listing = null;
 
-        // kontrollerar att requesten innehåller en giltig listning
-        if (bookingRequestDTO.getListing() != null && bookingRequestDTO.getListing().getId() != null) {
-            listing = listingRepository.findListingById(bookingRequestDTO.getListing().getId());
+        if (booking.getListing() != null && booking.getListing().getId() != null) {
+            listing = listingRepository.findListingById(booking.getListing().getId());
             if (listing == null) {
-                throw new ResourceNotFoundException("Listing not found with id: " + bookingRequestDTO.getListing().getId());
+                throw new ResourceNotFoundException("Listing not found with id: " + booking.getListing().getId());
             }
         } else {
             throw new IllegalArgumentException("Listing ID is required");
         }
 
         booking.setListing(listing);
-        booking.setStartDate(bookingRequestDTO.getStartDate());
-        booking.setEndDate(bookingRequestDTO.getEndDate());
 
-        if (bookingRequestDTO.getTotalAmount() == null) {
-            calculateTotalAmount(booking);
-        } else {
-            booking.setTotalAmount(bookingRequestDTO.getTotalAmount());
-        }
 
-        // validerar bokningen och uppdaterar listningens tillgänglighet
+        CalculateTotalAmount calcTotalAmount = new CalculateTotalAmount();
+        booking.setTotalAmount(calcTotalAmount.calculateTotalAmount(booking));
+
         validateAndUpdateAvailability(booking);
 
-        Booking savedBooking = bookingRepository.save(booking);
-        return convertToBookingResponseDTO(savedBooking);
+        return convertToBookingResponseDTO.convertToBookingResponseDTO(bookingRepository.save(booking));
     }
+
+
+
+
 
     // hjälpmetod som:
     // - validerar att en bokning är giltig och uppdaterar listningens tillgänglighet
     // - kontrollerar att datumen är giltiga, att listningen är tillgänglig, och att det inte
     // finns överlappande bokningar
+    // den här metoden kommer att ersättas av en Chain av validators när den är klar
     private void validateAndUpdateAvailability(Booking booking) {
         LocalDate startDate = booking.getStartDate();
         LocalDate endDate = booking.getEndDate();
@@ -144,6 +140,4 @@ public class BookingFactory {
         // sparar den uppdaterade listningen med de nya tillgänglighetsperioderna
         listingRepository.save(listing);
     }
-*/
-
 }
