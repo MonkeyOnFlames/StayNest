@@ -2,6 +2,8 @@ package com.example.StayNest.factories;
 
 import com.example.StayNest.dto.BookingResponseDTO;
 import com.example.StayNest.exceptions.ResourceNotFoundException;
+import com.example.StayNest.helpClasses.CalculateTotalAmount;
+import com.example.StayNest.helpClasses.ConvertToBookingResponseDTO;
 import com.example.StayNest.models.Booking;
 import com.example.StayNest.models.Listing;
 import com.example.StayNest.models.User;

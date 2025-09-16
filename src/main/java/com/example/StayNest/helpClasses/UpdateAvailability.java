@@ -1,4 +1,4 @@
-package com.example.StayNest.factories;
+package com.example.StayNest.helpClasses;
 
 import com.example.StayNest.models.Listing;
 import com.example.StayNest.repositories.ListingRepository;
