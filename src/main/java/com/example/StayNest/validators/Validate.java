@@ -24,6 +24,10 @@ public class Validate {
         return booking;
     }
 
+    public void setDate(boolean date) {
+        this.date = date;
+    }
+
     public boolean isDate() {
         return date;
     }
