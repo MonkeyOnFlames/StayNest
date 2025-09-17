@@ -1,4 +1,4 @@
-package com.example.StayNest.helpClasses;
+package com.example.StayNest.helpClasses.bookingFactory;
 
 import com.example.StayNest.dto.BookingResponseDTO;
 import com.example.StayNest.models.Booking;

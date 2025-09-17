@@ -1,4 +1,7 @@
 package com.example.StayNest.validators;
 
-public class DateValidator {
+public class DateValidator extends RequestValidator {
+
+
+
 }
