@@ -15,7 +15,7 @@ public class ValidatorProcessor {
 
         RequestValidator bookingValidator = new BookingValidator(booking, validate);
         RequestValidator dateValidator = new DateValidator();
-        RequestValidator availabilityValidator = new AvailabilityValidator();
+        RequestValidator availabilityValidator = new AvailabilityValidator(booking, validate);
         RequestValidator conflictValidator = new ConflictValidator();
         RequestValidator authorizationValidator = new AuthorizationValidator();
 
