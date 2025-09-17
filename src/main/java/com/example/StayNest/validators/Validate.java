@@ -16,6 +16,10 @@ public class Validate {
         this.auth = auth;
     }
 
+    public void setBooking(boolean booking) {
+        this.booking = booking;
+    }
+
     public boolean isBooking() {
         return booking;
     }

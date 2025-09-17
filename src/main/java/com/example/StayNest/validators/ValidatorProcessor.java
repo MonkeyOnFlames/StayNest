@@ -11,19 +11,21 @@ public class ValidatorProcessor {
 //        RequestValidator conflictValidator = new ConflictValidator(RequestValidator.conflict);
 //        RequestValidator authorizationValidator = new AuthorizationValidator(RequestValidator.auth);
 
-        RequestValidator validateBooking = new ValidateBooking(booking);
+        Validate validate = new Validate(true, true, true, true, true);
+
+        RequestValidator bookingValidator = new BookingValidator(booking, validate);
         RequestValidator dateValidator = new DateValidator();
         RequestValidator availabilityValidator = new AvailabilityValidator();
         RequestValidator conflictValidator = new ConflictValidator();
         RequestValidator authorizationValidator = new AuthorizationValidator();
 
 
-        validateBooking.setNextValidator(dateValidator);
-        dateValidator.setNextValidator(availabilityValidator);
-        availabilityValidator.setNextValidator(conflictValidator);
-        conflictValidator.setNextValidator(authorizationValidator);
+//        bookingValidator.setNextValidator(dateValidator);
+//        dateValidator.setNextValidator(availabilityValidator);
+//        availabilityValidator.setNextValidator(conflictValidator);
+//        conflictValidator.setNextValidator(authorizationValidator);
 
-        return validateBooking;
+        return bookingValidator;
     }
 
 

@@ -1,4 +1,4 @@
-package com.example.StayNest.helpClasses;
+package com.example.StayNest.helpClasses.bookingFactory;
 
 import com.example.StayNest.models.Listing;
 import com.example.StayNest.repositories.ListingRepository;
