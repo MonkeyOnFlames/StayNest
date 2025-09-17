@@ -14,13 +14,13 @@ public class ValidatorProcessor {
         Validate validate = new Validate(true, true, true, true, true);
 
         RequestValidator bookingValidator = new BookingValidator(booking, validate);
-        RequestValidator dateValidator = new DateValidator();
+        RequestValidator dateValidator = new DateValidator(booking, validate);
         RequestValidator availabilityValidator = new AvailabilityValidator();
         RequestValidator conflictValidator = new ConflictValidator();
         RequestValidator authorizationValidator = new AuthorizationValidator();
 
 
-//        bookingValidator.setNextValidator(dateValidator);
+        bookingValidator.setNextValidator(dateValidator);
 //        dateValidator.setNextValidator(availabilityValidator);
 //        availabilityValidator.setNextValidator(conflictValidator);
 //        conflictValidator.setNextValidator(authorizationValidator);
