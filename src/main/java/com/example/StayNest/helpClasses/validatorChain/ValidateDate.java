@@ -7,7 +7,7 @@ import java.time.LocalDate;
 public class ValidateDate {
 
     public boolean validateDate (Booking booking){
-        return (booking.getStartDate().isBefore(booking.getEndDate()) || booking.getStartDate() == booking.getEndDate()) &&
+        return (!booking.getEndDate().isBefore(booking.getStartDate())) &&
                 booking.getStartDate().isAfter(LocalDate.now());
     }
 }
