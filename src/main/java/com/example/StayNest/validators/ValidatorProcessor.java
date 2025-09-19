@@ -1,10 +1,11 @@
 package com.example.StayNest.validators;
 
 import com.example.StayNest.models.Booking;
+import com.example.StayNest.repositories.BookingRepository;
 
 public class ValidatorProcessor {
 
-    public static RequestValidator getChainOfValidators(Booking booking) {
+    public static RequestValidator getChainOfValidators(Booking booking, BookingRepository bookingRepository) {
 //        RequestValidator validateBooking = new ValidateBooking(RequestValidator.booking);
 //        RequestValidator dateValidator = new DateValidator(RequestValidator.date);
 //        RequestValidator availabilityValidator = new AvailabilityValidator(RequestValidator.available);
@@ -16,13 +17,13 @@ public class ValidatorProcessor {
         RequestValidator bookingValidator = new BookingValidator(booking, validate);
         RequestValidator dateValidator = new DateValidator(booking, validate);
         RequestValidator availabilityValidator = new AvailabilityValidator();
-        RequestValidator conflictValidator = new ConflictValidator();
+        RequestValidator conflictValidator = new ConflictValidator(booking, validate, bookingRepository);
         RequestValidator authorizationValidator = new AuthorizationValidator();
 
 
         bookingValidator.setNextValidator(dateValidator);
-//        dateValidator.setNextValidator(availabilityValidator);
-//        availabilityValidator.setNextValidator(conflictValidator);
+        dateValidator.setNextValidator(availabilityValidator);
+        availabilityValidator.setNextValidator(conflictValidator);
 //        conflictValidator.setNextValidator(authorizationValidator);
 
         return bookingValidator;

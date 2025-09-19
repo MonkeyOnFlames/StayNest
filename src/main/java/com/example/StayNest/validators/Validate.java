@@ -36,6 +36,10 @@ public class Validate {
         return available;
     }
 
+    public void setConflict(boolean conflict) {
+        this.conflict = conflict;
+    }
+
     public boolean isConflict() {
         return conflict;
     }
