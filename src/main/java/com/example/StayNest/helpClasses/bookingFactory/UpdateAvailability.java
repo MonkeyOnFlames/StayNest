@@ -16,8 +16,18 @@ public class UpdateAvailability {
 
     // Uppdaterar tillgängligheten för en listning när en bokning har gjorts, kanske ska flyttas men la allt här nu...
     //  Tar även bort den ursprungliga tillgänglighetsperioden och skapar nya perioder före och efter bokningen om det behövs...
-    public void updateAvailability(Listing listing, Listing.Availability matchingAvailability,
-                                    LocalDate startDate, LocalDate endDate) {
+    public void updateAvailability(Listing listing, LocalDate startDate, LocalDate endDate) {
+
+        Listing.Availability matchingAvailability = new Listing.Availability();
+
+        for (Listing.Availability availability : listing.getAvailabilities()) {
+            // kontrollerar om datumen ligger inom tillgänglighetsperioden
+            if (!startDate.isBefore(availability.getStartDate()) &&
+                    !endDate.isAfter(availability.getEndDate())) {
+                matchingAvailability = availability;
+                break;
+            }
+        }
         // tar bort den ursprungliga tillgänglighetsperioden från listningen
         listing.getAvailabilities().remove(matchingAvailability);
 

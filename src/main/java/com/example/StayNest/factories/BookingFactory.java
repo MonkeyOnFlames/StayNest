@@ -4,6 +4,7 @@ import com.example.StayNest.dto.BookingResponseDTO;
 import com.example.StayNest.exceptions.ResourceNotFoundException;
 import com.example.StayNest.helpClasses.bookingFactory.CalculateTotalAmount;
 import com.example.StayNest.helpClasses.bookingFactory.ConvertToBookingResponseDTO;
+import com.example.StayNest.helpClasses.bookingFactory.UpdateAvailability;
 import com.example.StayNest.models.Booking;
 import com.example.StayNest.models.Listing;
 import com.example.StayNest.models.User;
@@ -34,7 +35,7 @@ public class BookingFactory {
         User loggedInUser = userService.getLoggedInUser();
         booking.setUser(loggedInUser);
 
-        RequestValidator validateChain = ValidatorProcessor.getChainOfValidators(booking, bookingRepository, listingRepository);
+        RequestValidator validateChain = ValidatorProcessor.getChainOfValidators(booking, bookingRepository, listingRepository, userService);
         validateChain.validationHandler();
 
         Listing listing = null;
@@ -55,92 +56,10 @@ public class BookingFactory {
         booking.setTotalAmount(calcTotalAmount.calculateTotalAmount(booking));
 
 
-        // validateAndUpdateAvailability(booking);
+        UpdateAvailability updateAvailability = new UpdateAvailability(listingRepository);
+        updateAvailability.updateAvailability(listing, booking.getStartDate(), booking.getEndDate());
+
 
         return convertToBookingResponseDTO.convertToBookingResponseDTO(bookingRepository.save(booking));
     }
-
-
-
-
-
-//    // hjälpmetod som:
-//    // - validerar att en bokning är giltig och uppdaterar listningens tillgänglighet
-//    // - kontrollerar att datumen är giltiga, att listningen är tillgänglig, och att det inte
-//    // finns överlappande bokningar
-//    // den här metoden kommer att ersättas av en Chain av validators när den är klar
-//    private void validateAndUpdateAvailability(Booking booking) {
-//        LocalDate startDate = booking.getStartDate();
-//        LocalDate endDate = booking.getEndDate();
-//
-//        // kontrollerar att start- och slutdatum är angivna
-//        if (startDate == null || endDate == null) {
-//            throw new IllegalArgumentException("Booking start and end dates cannot be null");
-//        }
-//
-//        // kontrollerar att startdatum inte är efter slutdatum
-//        if (startDate.isAfter(endDate)) {
-//            throw new IllegalArgumentException("Booking start date cannot be after end date");
-//        }
-//
-//        // kontrollerar att startdatum inte är i det förflutna
-//        if (startDate.isBefore(LocalDate.now())) {
-//            throw new IllegalArgumentException("Booking start date cannot be in the past");
-//        }
-//
-//        Listing listing = booking.getListing();
-//
-//        // letar efter en tillgänglighetsperiod som matchar de begärda datumen eftersom ni ville ha det..
-//        Listing.Availability matchingAvailability = null;
-//        for (Listing.Availability availability : listing.getAvailabilities()) {
-//            // kontrollerar om datumen ligger inom tillgänglighetsperioden
-//            if (!startDate.isBefore(availability.getStartDate()) &&
-//                    !endDate.isAfter(availability.getEndDate())) {
-//                matchingAvailability = availability;
-//                break;
-//            }
-//        }
-//
-//        if (matchingAvailability == null) {
-//            throw new IllegalArgumentException("The selected dates are not available for booking");
-//        }
-//
-//        // kontrollerar att det inte finns några överlappande bokningar under den valda perioden
-//        List<Booking> existingBookings = bookingRepository.findByListingIdAndStartDateLessThanEqualAndEndDateGreaterThanEqual(
-//                listing.getId(), endDate, startDate);
-//
-//        if (existingBookings != null && !existingBookings.isEmpty()) {
-//            throw new IllegalArgumentException("The selected dates overlap with existing bookings");
-//        }
-//
-//        // uppdaterar listningens tillgänglighet baserat på den nya bokningen
-//        updateAvailability(listing, matchingAvailability, startDate, endDate);
-//    }
-//
-//    // uppdaterar tillgängligheten för en listning när en bokning har gjorts, kanske ska flyttas men la allt här nu...
-//    //  tar även bort den ursprungliga tillgänglighetsperioden och skapar nya perioder före och efter bokningen om det behövs..
-//    private void updateAvailability(Listing listing, Listing.Availability matchingAvailability,
-//                                    LocalDate startDate, LocalDate endDate) {
-//        // tar bort den ursprungliga tillgänglighetsperioden från listningen
-//        listing.getAvailabilities().remove(matchingAvailability);
-//
-//        // skapar en ny tillgänglighetsperiod före bokningen om det finns dagar kvar före
-//        if (startDate.isAfter(matchingAvailability.getStartDate())) {
-//            Listing.Availability beforeBooking = new Listing.Availability();
-//            beforeBooking.setStartDate(matchingAvailability.getStartDate());
-//            beforeBooking.setEndDate(startDate.minusDays(1));
-//            listing.getAvailabilities().add(beforeBooking);
-//        }
-//
-//        // skapar en ny tillgänglighetsperiod efter bokningen om det finns dagar kvar efter
-//        if (endDate.isBefore(matchingAvailability.getEndDate())) {
-//            Listing.Availability afterBooking = new Listing.Availability();
-//            afterBooking.setStartDate(endDate.plusDays(1));
-//            afterBooking.setEndDate(matchingAvailability.getEndDate());
-//            listing.getAvailabilities().add(afterBooking);
-//        }
-//
-//        // sparar den uppdaterade listningen med de nya tillgänglighetsperioderna
-//        listingRepository.save(listing);
-//    }
 }
