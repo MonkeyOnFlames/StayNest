@@ -34,7 +34,7 @@ public class BookingFactory {
         User loggedInUser = userService.getLoggedInUser();
         booking.setUser(loggedInUser);
 
-        RequestValidator validateChain = ValidatorProcessor.getChainOfValidators(booking, listingRepository);
+        RequestValidator validateChain = ValidatorProcessor.getChainOfValidators(booking, bookingRepository, listingRepository);
         validateChain.validationHandler();
 
         Listing listing = null;
