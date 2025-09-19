@@ -24,14 +24,5 @@ public class ValidateConflict {
 
         return existingBookings == null || existingBookings.isEmpty();
 
-
-
-        // kontrollerar att det inte finns några överlappande bokningar under den valda perioden
-//        List<Booking> existingBookings = bookingRepository.findByListingIdAndStartDateLessThanEqualAndEndDateGreaterThanEqual(
-//                listing.getId(), endDate, startDate);
-//
-//        if (existingBookings != null && !existingBookings.isEmpty()) {
-//            throw new IllegalArgumentException("The selected dates overlap with existing bookings");
-//        }
     }
 }
