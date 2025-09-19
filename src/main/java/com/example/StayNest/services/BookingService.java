@@ -198,7 +198,7 @@ public class BookingService {
        Booking updatedBooking =  bookingRepository.save(existingBooking);
 
        return ConvertToBookingResponseDTO.convertToBookingResponseDTO(updatedBooking);
-    }
+   }
 
     public void deleteBooking(String id) {
 
@@ -214,25 +214,9 @@ public class BookingService {
         }
     }
 
-    private void validateBooking(Booking booking){
-        if (booking.getListing() == null){
-            throw new IllegalArgumentException("Listing cannot be empty or null");
-        }
-        if (booking.getUser() == null){
-            throw new IllegalArgumentException("User cannot be empty or null");
-        }
-        if (booking.getTotalAmount() < 0){
-            throw new IllegalArgumentException("Price cannot be less than 0");
-        }
-        if (booking.getStartDate() == null){
-            throw new IllegalArgumentException("Start date cannot be null");
-        }
-        if (booking.getEndDate() == null){
-            throw new IllegalArgumentException("End date cannot be null");
-        }
-
-    }
-
-
 
 }
+
+
+
+
