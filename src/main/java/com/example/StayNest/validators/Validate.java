@@ -5,6 +5,8 @@ public class Validate {
     private boolean date;
     private boolean available;
     private boolean conflict;
+
+
     private boolean auth;
     private boolean valid = true;
 
@@ -45,6 +47,10 @@ public class Validate {
 
     public boolean isConflict() {
         return conflict;
+    }
+
+    public void setAuth(boolean auth) {
+        this.auth = auth;
     }
 
     public boolean isAuth() {
