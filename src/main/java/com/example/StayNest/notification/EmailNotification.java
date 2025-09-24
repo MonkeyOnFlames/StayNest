@@ -37,34 +37,3 @@ public class EmailNotification extends Notification {
         notificationManager.sendNotification(notification, decorated);
     }
 }
-
-
-/*
-public class EmailNotification extends Notification {
-
-    private final JavaMailSender mailSender;
-    private final String senderEmail;
-
-
-    public EmailNotification(Booking booking, JavaMailSender mailSender, String senderEmail) {
-        super(booking); // Anropar överklassens konstruktor
-        this.mailSender = mailSender;
-        this.senderEmail = senderEmail;
-    }
-
-
-    @Override
-    public void send() {
-        User user = booking.getUser();
-        Listing listing = booking.getListing();
-        User landlord = listing.getUser(); // Hämta uthyraren från listningen
-
-
-        if (user == null || user.getEmail() == null || listing == null || landlord == null) {
-            System.err.println(" " + booking.getId());
-
-        }
-    }
-}
-
- */

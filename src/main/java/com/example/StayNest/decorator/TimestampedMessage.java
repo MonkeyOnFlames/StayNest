@@ -11,7 +11,7 @@ public class TimestampedMessage extends NotificationDecorator {
 
     }
 
-@Super
+
     public String getContent() {
 
         return message.getContent() + " @ " +

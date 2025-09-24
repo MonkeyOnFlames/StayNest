@@ -1,6 +1,8 @@
 package com.example.StayNest.strategy;
 
-import org.springframework.data.mongodb.core.messaging.Message;
+
+import com.example.StayNest.notification.Message;
+
 
 public class DelayedSendStrategy implements SendStrategy {
 

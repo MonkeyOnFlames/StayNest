@@ -36,25 +36,3 @@ public abstract class Notification {
         return strategy;
     }
 }
-
-/*
-public abstract class Notification {
-    // Data som notification ska baseras på
-    private Booking booking;
-
-    public Notification(Booking booking) {
-        this.booking = booking;
-    }
-
-    public abstract void send();
-
-    public Booking getBooking(){
-        return booking;
-    }
-
-
-    public void setBooking(Booking booking) {
-        this.booking = booking;
-    }
-}
- */
