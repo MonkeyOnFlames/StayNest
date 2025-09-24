@@ -1,6 +1,7 @@
 package com.example.StayNest.decorator;
 
-import org.springframework.data.mongodb.core.messaging.Message;
+
+import com.example.StayNest.notification.Message;
 
 public class TimestampedMessage extends NotificationDecorator {
 
@@ -10,7 +11,7 @@ public class TimestampedMessage extends NotificationDecorator {
 
     }
 
-
+@Super
     public String getContent() {
 
         return message.getContent() + " @ " +

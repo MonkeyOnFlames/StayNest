@@ -1,6 +1,6 @@
 package com.example.StayNest.notification;
 
-import org.springframework.data.mongodb.core.messaging.Message;
+import com.example.StayNest.notification.Message;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,10 +9,10 @@ public class NotificationManager {
 
     private static NotificationManager instance;
 
-    // ska det vara <Objekt> här eller ska den vara tom <> ?
-    private List observers = new ArrayList<Object>();
 
-    private NotificationManager() {}
+    private List<NotificationObserver> observers = new ArrayList<>();
+
+    public NotificationManager() {}
 
     public static synchronized NotificationManager
     getInstance()

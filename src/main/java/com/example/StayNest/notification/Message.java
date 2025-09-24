@@ -1,7 +1,6 @@
 package com.example.StayNest.notification;
 
-public interface message {
+public interface Message {
 
     String getContent();
-    return " " + message.getContent();
 }

@@ -5,34 +5,37 @@ import com.example.StayNest.decorator.TimestampedMessage;
 import com.example.StayNest.models.Booking;
 import com.example.StayNest.models.Listing;
 import com.example.StayNest.models.User;
-import org.springframework.data.mongodb.core.messaging.Message;
+
 import  com.example.StayNest.notification.Notification;
+import com.example.StayNest.strategy.DelayedSendStrategy;
 // behöver fömodlinger mer import
 
 public class EmailNotification extends Notification {
-    public EmailNotification()
-    {
+    public void emailNotification(String message) {
         System.out.println("Created Email Notification");
-    }
 
-    Message baseMessage = () -> "your message: ";
 
-    Message encrypted
-            = new EncryptedMessage(baseMessage);
+        Message baseMessage = () -> message;
 
-    Message decorated
-            = new TimestampedMessage(encrypted);
+        Message encrypted
+                = new EncryptedMessage(baseMessage);
 
-    // Create notification type
+        Message decorated
+                = new TimestampedMessage(encrypted);
 
-    Notification notification
-            = NotificationFactory.createNotification(
-            "email");
+        NotificationManager notificationManager = new NotificationManager();
+
+        // Create notification type
+
+        Notification notification
+                = NotificationFactory.createNotification(
+                "email");
 
         notification.setStrategy(
                 new DelayedSendStrategy());
 
         notificationManager.sendNotification(notification, decorated);
+    }
 }
 
 

@@ -2,7 +2,7 @@ package com.example.StayNest.notification;
 
 import com.example.StayNest.models.Booking;
 import com.example.StayNest.strategy.SendStrategy;
-import org.springframework.data.mongodb.core.messaging.Message;
+import com.example.StayNest.notification.Message;
 
 public abstract class Notification {
 

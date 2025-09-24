@@ -8,6 +8,7 @@ import com.example.StayNest.helpClasses.bookingFactory.CalculateTotalAmount;
 import com.example.StayNest.helpClasses.bookingFactory.ConvertToBookingResponseDTO;
 import com.example.StayNest.models.Booking;
 import com.example.StayNest.models.User;
+import com.example.StayNest.notification.EmailNotification;
 import com.example.StayNest.repositories.BookingRepository;
 import com.example.StayNest.repositories.ListingRepository;
 import org.springframework.stereotype.Service;
@@ -29,7 +30,8 @@ public class BookingService {
 
     // Helenas createBooking
     public BookingResponseDTO createBooking(Booking booking) {
-
+        EmailNotification emailNotification = new EmailNotification();
+        emailNotification.emailNotification("success your message is sent");
         return bookingFactory.createBookingObject(booking);
 
     }

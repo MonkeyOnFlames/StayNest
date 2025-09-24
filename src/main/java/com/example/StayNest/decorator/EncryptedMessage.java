@@ -1,13 +1,13 @@
 package com.example.StayNest.decorator;
 
 
-import org.springframework.data.mongodb.core.messaging.Message;
+import com.example.StayNest.notification.Message;
 
 public class EncryptedMessage extends NotificationDecorator {
 
     public EncryptedMessage(Message message) {
 
-        super(Message);
+        super(message);
 
     }
     public String getContent() {
