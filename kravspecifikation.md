@@ -16,7 +16,7 @@
 - IFK-002: All personlig och akademisk data ska lagras krypterad.
 - IFK-003: Applikationen ska följa GDPR för hantering av personuppgifter
 
-### Användaerbarhet
+### Användarbarhet
 - IFK-004: Användargränssnittet ska vara intuitivt och lättnavigerat
 
 ### Skalbarhet
