@@ -6,7 +6,7 @@
 - FK-002: Systemet ska se till så att det inte kan bli dubbelbokningar.
 
 ### Notifikationer
-- FK-003: Systemet ska skicka en bokningbekräftelse när en bokning är gjord
+- FK-003: Systemet ska skicka en bokningsbekräftelse via epost när en bokning är gjord
 
 ## Icke-funktionella krav
 ### Prestanda
